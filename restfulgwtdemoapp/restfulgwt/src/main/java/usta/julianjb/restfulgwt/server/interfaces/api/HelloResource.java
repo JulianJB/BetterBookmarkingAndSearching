@@ -21,8 +21,8 @@ public class HelloResource {
     public HelloResource() {
         database = new HashMap<String, Hello>();
         // A Hello object is made from an "id" field and a "Name" field
-        Hello hello1 = new Hello("1", "Aline");
-        Hello hello2 = new Hello("2", "Aleksandra");
+        Hello hello1 = new Hello("1", "Person1");
+        Hello hello2 = new Hello("2", "Person2");
 
         database.put(hello1.getId(), hello1);
         database.put(hello2.getId(), hello2);
