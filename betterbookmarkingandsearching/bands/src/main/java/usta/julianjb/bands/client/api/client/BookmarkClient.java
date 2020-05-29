@@ -4,9 +4,12 @@ import org.fusesource.restygwt.client.MethodCallback;
 import org.fusesource.restygwt.client.RestService;
 import usta.julianjb.bands.shared.domain.Bookmark;
 
+import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import java.util.List;
 
 /**
@@ -31,4 +34,27 @@ public interface BookmarkClient extends RestService {
     // Create a bookmark in the database
     @POST
     public void createBookmark(Bookmark bookmark, MethodCallback<Void> callback);
+
+    // Retrieve a Bookmark object from the database using its URL value
+    @GET
+    // Map the request as of Bookmark Editor type (/bmEditor)
+    @Path("/bmEditor/{url}")
+    public void getBookmark(@PathParam("url") String urlEncoded, MethodCallback<Bookmark> bookmark);
+
+    // Remove a bookmark from the database
+    @DELETE
+    // Map the request as of Bookmark Manager type (/bmManager)
+    @Path("/bmManager/{url}")
+    public void removeBookmark(@PathParam("url") String urlEncoded, MethodCallback<Void> callback);
+
+    // Edit a bookmark in the database
+    @PUT
+    // Map the request as of Bookmark Editor type (/bmEditor)
+    @Path("/bmEditor/{url}")
+    public void editBookmark(@PathParam("url") String urlEncoded, Bookmark bookmark,
+                             MethodCallback<Void> callback);
+
+    /**
+     * TODO: /bmFilter requests: GET by List, POST new List, DELETE delete List
+     */
 }
