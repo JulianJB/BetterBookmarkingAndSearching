@@ -54,7 +54,27 @@ public interface BookmarkClient extends RestService {
     public void editBookmark(@PathParam("url") String urlEncoded, Bookmark bookmark,
                              MethodCallback<Void> callback);
 
-    /**
-     * TODO: /bmFilter requests: GET by List, POST new List, DELETE delete List
-     */
+    // Retrieve all of the lists for filtering
+    @GET
+    // Map the request as of Bookmark Filter type (/bmFilter)
+    @Path("/bmFilter")
+    public void getLists(MethodCallback<List<String>> lists);
+
+    // Retrieve all of the Bookmark objects filtered from a list
+    @GET
+    // Map the request as of Bookmark Filter type (/bmFilter)
+    @Path("/bmFilter/{list}")
+    public void filterBookmarks(@PathParam("list") String list, MethodCallback<List<Bookmark>> bookmarks);
+
+    // Create a list in the database
+    @POST
+    // Map the request as of Bookmark Filter type (/bmFilter)
+    @Path("/bmFilter/{list}")
+    public void createList(@PathParam("list") String list, MethodCallback<Void> callback);
+
+    // Remove a list from the database
+    @DELETE
+    // Map the request as of Bookmark Filter type (/bmFilter)
+    @Path("/bmFilter/{list}")
+    public void removeList(@PathParam("list") String list, MethodCallback<Void> callback);
 }

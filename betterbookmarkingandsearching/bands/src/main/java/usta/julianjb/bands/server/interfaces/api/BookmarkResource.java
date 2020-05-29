@@ -109,4 +109,75 @@ public class BookmarkResource {
         // Edit a bookmark in the database from a Bookmark object and its URL value
         dbConnection.updateBookmark(urlEncoded, bookmark);
     }
+
+    // Retrieve all of the lists for filtering
+    @GET
+    // Map the request as of Bookmark Filter type (/bmFilter)
+    @Path("/bmFilter")
+    @Produces("application/json")
+    public ArrayList<String> getLists() throws Exception {
+        // Logging the request
+        logger.log(Level.INFO, "Processing a GET request from the client");
+        // An ArrayList of String objects for the lists retrieved from the database
+        ArrayList<String> returnedLists;
+        // Starting the connection with the database
+        dbConnection = new SQLiteConnection();
+        // Retrieve all of the lists from the database
+        returnedLists = dbConnection.selectLists();
+        // Return the ArrayList of String objects containing the lists to the client
+        return returnedLists;
+    }
+
+    // Retrieve all of the Bookmark objects filtered from a list
+    @GET
+    // Map the request as of Bookmark Filter type (/bmFilter)
+    @Path("/bmFilter/{list}")
+    @Produces("application/json")
+    public ArrayList<Bookmark> filterBookmarks(@PathParam("list") String list) throws Exception {
+        // Logging the request
+        logger.log(Level.INFO, "Processing a GET request from the client");
+        // An ArrayList for the Bookmark objects retrieved from the database
+        ArrayList<Bookmark> returnedBookmarks;
+        // Starting the connection with the database
+        dbConnection = new SQLiteConnection();
+        // Retrieve all of the bookmarks from the database
+        returnedBookmarks = dbConnection.filterBookmarks(list);
+        // Reverse the order of the list of bookmarks to display them from newest to oldest
+        Collections.reverse(returnedBookmarks);
+        // Return the ArrayList of the Bookmark objects to the client
+        return returnedBookmarks;
+    }
+
+    // Create a list in the database
+    @POST
+    // Map the request as of Bookmark Filter type (/bmFilter)
+    @Path("/bmFilter/{list}")
+    @Produces("application/json")
+    public void createList(@PathParam("list") String list) throws Exception {
+        // Logging the request
+        logger.log(Level.INFO, "Processing a POST request from the client");
+        // Starting the connection with the database
+        dbConnection = new SQLiteConnection();
+        // Create a list in the database for filtering
+        dbConnection.insertList(list);
+    }
+
+    // Remove a list from the database
+    @DELETE
+    // Map the request as of Bookmark Filter type (/bmFilter)
+    @Path("/bmFilter/{list}")
+    @Produces("application/json")
+    public void removeList(@PathParam("list") String list) throws Exception {
+        // Logging the request
+        logger.log(Level.INFO, "Processing a DELETE request from the client");
+        // Starting the connection with the database
+        dbConnection = new SQLiteConnection();
+        // Before removing the list from the database, the List value of the bookmarks
+        // has to be changed to the default value "General" (reset the List value).
+        // This is the equivalent to a PUT request, however, it is not mapped to the REST API
+        // because it will not ever be called directly by the client (batch editing is not allowed).
+        dbConnection.updateList(list);
+        // Remove the list from the database
+        dbConnection.deleteList(list);
+    }
 }
