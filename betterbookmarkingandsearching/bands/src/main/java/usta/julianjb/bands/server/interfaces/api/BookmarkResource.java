@@ -124,6 +124,8 @@ public class BookmarkResource {
         dbConnection = new SQLiteConnection();
         // Retrieve all of the lists from the database
         returnedLists = dbConnection.selectLists();
+        // Add the "All" list at the beginning of the ArrayList of String objects
+        returnedLists.add(0, "All");
         // Return the ArrayList of String objects containing the lists to the client
         return returnedLists;
     }
