@@ -13,6 +13,7 @@ import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.DialogBox;
 import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.ListBox;
@@ -67,10 +68,14 @@ public class bands_bookmarking implements EntryPoint {
         bmMainPanel = new VerticalPanel();
         // Instance a horizontal panel to act as a container of all of the filtering elements
         bmFilterPanel = new HorizontalPanel();
+        // Set the CSS style to the filtering panel
+        bmFilterPanel.setStyleName("bmFilterPanel");
         // Instance a vertical panel to act as a container of all of the bookmarks elements
         bmBookmarksPanel = new VerticalPanel();
         // Instance a label for the title of the bookmarking module
         final Label titleLabel = new Label("My bookmarks");
+        // Set the CSS style to the title label
+        titleLabel.setStyleName("titleLabel");
         // Add the title label to the main panel
         bmMainPanel.add(titleLabel);
         // Add the filtering panel to the main panel
@@ -119,14 +124,16 @@ public class bands_bookmarking implements EntryPoint {
         final int ANCHOR_INDEX = 2;
         // Instance a flex table to act as a container of the Bookmark objects
         bookmarksTable = new FlexTable();
-        // DEBUG: Testing the border layout of the flex table
-        bookmarksTable.setBorderWidth(1);
+        // Set the CSS style to the bookmarks table
+        bookmarksTable.setStyleName("bookmarksTable");
         // Retrieve all of the Bookmark objects and prepare to display them
         for (Bookmark bookmark : bookmarks) {
             // A variable to control the creation of new entries in the bookmarks table
             final int row = bookmarksTable.getRowCount();
             // Initialise the UI elements for the bookmark information
             nameLabel = new Label(bookmark.getPageTitle());
+            // Set the CSS style to the name label
+            nameLabel.setStyleName("nameLabel");
             descriptionLabel = new Label(bookmark.getPageDescription());
             locationAnchor = new Anchor(bookmark.getUrlEncoded());
             // Adding the click handler method for the anchor element
@@ -142,6 +149,8 @@ public class bands_bookmarking implements EntryPoint {
             });
             // Initialise a flow panel to act as a container of all of the bookmark information UI elements
             containerPanel = new FlowPanel();
+            // Set the CSS style to the bookmarks panel
+            containerPanel.setStyleName("bookmarksPanel");
             // Add the bookmark information UI elements to the container panel
             containerPanel.add(nameLabel);
             containerPanel.add(descriptionLabel);
@@ -149,12 +158,22 @@ public class bands_bookmarking implements EntryPoint {
             // Add the container panel to the bookmarks table in the corresponding column
             // Create a new entry in the flex table
             bookmarksTable.setWidget(row, BOOKMARK_COLUMN, containerPanel);
+            // Set the CSS style to the bookmarks cells of the bookmarks table
+            // Apply a cell formatter in the bookmarks column to define a fixed
+            // column size that ignores the width of the content of the bookmark.
+            bookmarksTable.getCellFormatter().addStyleName(row, BOOKMARK_COLUMN,
+                    "bookmarksCell");
             // Initialise the UI elements for the bookmark manager
             editButton = new Button();
             removeButton = new Button();
-            // DEBUG: Button text to be replaced with an image (icon)
-            editButton.setText("Edit");
-            removeButton.setText("Delete");
+            // Set the tooltip text for the edit button
+            editButton.setTitle("Edit");
+            // Set the tooltip text for the delete button
+            removeButton.setTitle("Delete");
+            // Set the CSS style to the edit button
+            editButton.addStyleName("editButton");
+            // Set the CSS style to the delete button
+            removeButton.addStyleName("removeButton");
             // Adding the click handler methods for the buttons
             // The click handler method for the "Edit Bookmark" button
             editButton.addClickHandler(new ClickHandler() {
@@ -204,6 +223,9 @@ public class bands_bookmarking implements EntryPoint {
             // Add the bookmark manager UI elements to the container panel
             containerPanel.add(editButton);
             containerPanel.add(removeButton);
+            // Set the CSS style to the container panel for the buttons
+            // of the bookmarks table.
+            containerPanel.setStyleName("buttonsPanel");
             // Add the container panel to the bookmarks table in the corresponding column
             // Create a new entry in the flex table
             bookmarksTable.setWidget(row, MANAGER_COLUMN, containerPanel);
@@ -222,9 +244,13 @@ public class bands_bookmarking implements EntryPoint {
         // Instance a horizontal panel to act as a container of the UI elements
         // of the list filtering functionality.
         bmListPanel = new HorizontalPanel();
+        // Set the CSS style to the list panel
+        bmListPanel.setStyleName("bmListPanel");
         // Initialise the UI elements for the list filtering functionality
         listFilterLabel = new Label("Filter by List:");
         listSelector = new ListBox();
+        // Set the CSS style to the list filter label
+        listFilterLabel.setStyleName("listFilterLabel");
         // Add the list filtering functionality UI elements to the list panel
         bmListPanel.add(listFilterLabel);
         bmListPanel.add(listSelector);
@@ -288,7 +314,6 @@ public class bands_bookmarking implements EntryPoint {
         // The UI elements of the bookmarks editor
         DialogBox bookmarksEditor;
         FlowPanel containerPanel;
-        Label bookmarksEditorLabel;
         Label nameLabel;
         Label descriptionLabel;
         Label locationLabel;
@@ -302,8 +327,6 @@ public class bands_bookmarking implements EntryPoint {
         // Initialise the UI elements for the bookmarks editor
         // Instance a dialog box to act as a pop-up window and set its display properties
         bookmarksEditor = new DialogBox();
-        // Set the size dimensions of the bookmarks editor window
-        bookmarksEditor.setSize("550", "750");
         // Disable the background by blurring it with a dim color (requires CSS styling)
         bookmarksEditor.setGlassEnabled(true);
         // Enable animation features for the widget
@@ -313,7 +336,6 @@ public class bands_bookmarking implements EntryPoint {
         // Instance the UI elements of the bookmarks editor with their default values
         containerPanel = new FlowPanel();
         // Initialise the labels for the bookmarks editor
-        bookmarksEditorLabel = new Label("Edit Bookmark");
         nameLabel = new Label("Name:");
         descriptionLabel = new Label("Description:");
         locationLabel = new Label("Location:");
@@ -389,6 +411,10 @@ public class bands_bookmarking implements EntryPoint {
         confirmButton.setText("Confirm");
         cancelButton = new Button();
         cancelButton.setText("Cancel");
+        // Set the CSS style to the confirm button
+        confirmButton.setStyleName("confirmButton");
+        // Set the CSS style to the cancel button
+        cancelButton.setStyleName("cancelButton");
         // Adding the click handler methods for the buttons
         // The click handler method for the "Confirm" button
         confirmButton.addClickHandler(new ClickHandler() {
@@ -445,8 +471,6 @@ public class bands_bookmarking implements EntryPoint {
             }
         });
         // Adding the UI elements of the bookmarks editor hierarchically
-        // Add the title label to the container panel
-        containerPanel.add(bookmarksEditorLabel);
         // Add the bookmark name UI elements to the container panel
         containerPanel.add(nameLabel);
         containerPanel.add(nameTextBox);
@@ -459,9 +483,13 @@ public class bands_bookmarking implements EntryPoint {
         // Add the bookmark list UI elements to the container panel
         containerPanel.add(listLabel);
         containerPanel.add(listSelector);
+        // Add a break line in HTML to separate the widgets
+        containerPanel.add(new HTML("&nbsp;"));
         // Add the bookmarks editor buttons to the container panel
         containerPanel.add(confirmButton);
         containerPanel.add(cancelButton);
+        // Set the CSS style to the container panel of the bookmarks editor
+        containerPanel.setStyleName("widgetPanel");
         // Add the container panel to the bookmarks editor window
         bookmarksEditor.add(containerPanel);
         // Position the bookmarks editor at the center of the screen
@@ -482,8 +510,6 @@ public class bands_bookmarking implements EntryPoint {
         // Initialise the UI elements for the list creator
         // Instance a dialog box to act as a pop-up window and set its display properties
         listCreator = new DialogBox();
-        // Set the size dimensions of the list creator window
-        listCreator.setSize("550", "750");
         // Disable the background by blurring it with a dim color (requires CSS styling)
         listCreator.setGlassEnabled(true);
         // Enable animation features for the widget
@@ -501,6 +527,10 @@ public class bands_bookmarking implements EntryPoint {
         confirmButton.setText("Confirm");
         cancelButton = new Button();
         cancelButton.setText("Cancel");
+        // Set the CSS style to the confirm button
+        confirmButton.setStyleName("confirmButton");
+        // Set the CSS style to the cancel button
+        cancelButton.setStyleName("cancelButton");
         // Adding the click handler methods for the buttons
         // The click handler method for the "Confirm" button
         confirmButton.addClickHandler(new ClickHandler() {
@@ -548,9 +578,13 @@ public class bands_bookmarking implements EntryPoint {
         // Add the list name UI elements to the container panel
         containerPanel.add(listNameLabel);
         containerPanel.add(listNameTextBox);
+        // Add a break line in HTML to separate the widgets
+        containerPanel.add(new HTML("&nbsp;"));
         // Add the list creator buttons to the container panel
         containerPanel.add(confirmButton);
         containerPanel.add(cancelButton);
+        // Set the CSS style to the container panel of the list creator
+        containerPanel.setStyleName("widgetPanel");
         // Add the container panel to the list creator window
         listCreator.add(containerPanel);
         // Position the list creator at the center of the screen
@@ -576,8 +610,6 @@ public class bands_bookmarking implements EntryPoint {
         // Initialise the UI elements for the list manager
         // Instance a dialog box to act as a pop-up window and set its display properties
         listManager = new DialogBox();
-        // Set the size dimensions of the list manager window
-        listManager.setSize("550", "750");
         // Disable the background by blurring it with a dim color (requires CSS styling)
         listManager.setGlassEnabled(true);
         // Enable animation features for the widget
@@ -586,8 +618,8 @@ public class bands_bookmarking implements EntryPoint {
         listManager.setText("Manage My Lists");
         // Instance a flex table to act as a container of the lists
         listsTable = new FlexTable();
-        // DEBUG: Testing the border layout of the flex table
-        listsTable.setBorderWidth(1);
+        // Set the CSS style to the lists table
+        listsTable.setStyleName("listsTable");
         // Instance the UI elements of the list manager with their default values
         containerPanel = new FlowPanel();
         // Request to update the lists retrieved from the database
@@ -606,16 +638,15 @@ public class bands_bookmarking implements EntryPoint {
             // Add the list to the lists table in the corresponding column
             // Create a new entry in the flex table
             listsTable.setText(row, LIST_COLUMN, list);
-            // The "General" list is created by default and cannot be removed from the database
-            if (list.equals("General")) {
-                // Skip adding the "Delete" button to the lists table
-                // as it is the default list and cannot be removed.
-                continue;
-            }
             // Initialise the UI elements for the list manager
             removeButton = new Button();
-            // DEBUG: Button text to be replaced with an image (icon)
             removeButton.setText("Delete");
+            // The "General" list is created by default and cannot be removed from the database
+            if (list.equals("General")) {
+                // Disable the "Delete" button of the lists table
+                // as it is the default list and cannot be removed.
+                removeButton.setEnabled(false);
+            }
             // Adding the click handler method for the button
             // The click handler method for the "Delete List" button
             removeButton.addClickHandler(new ClickHandler() {
@@ -654,11 +685,11 @@ public class bands_bookmarking implements EntryPoint {
             // Create a new entry in the flex table
             listsTable.setWidget(row, MANAGER_COLUMN, removeButton);
         }
-        // Instance the UI elements of the list manager with their default values
-        // containerPanel = new FlowPanel();
         // Initialise the remaining button for the list manager
         closeButton = new Button();
         closeButton.setText("Close");
+        // Set the CSS style to the close button
+        closeButton.setStyleName("closeButton");
         // Adding the click handler method for the button
         // The click handler method for the "Close" button
         closeButton.addClickHandler(new ClickHandler() {
@@ -681,6 +712,8 @@ public class bands_bookmarking implements EntryPoint {
         containerPanel.add(listsTable);
         // Add the close button to the container panel
         containerPanel.add(closeButton);
+        // Set the CSS style to the container panel of the list manager
+        containerPanel.setStyleName("widgetPanel");
         // Add the container panel to the list manager window
         listManager.add(containerPanel);
         // Position the list manager at the center of the screen
