@@ -1,9 +1,154 @@
-/** The CSS rules for the application */
+/** The CSS rules for the styles of the main module */
 
-h1 {
-  font-size: 2em;
+/** The main CSS styles for the HTML elements */
+
+/** The CSS rules for the paragraph element */
+p {
+  color: black;
+  font-family: sans-serif;
+  font-size: 1.875em;
   font-weight: bold;
-  color: #777777;
-  margin: 40px 0px 70px;
+  letter-spacing: 0px;
   text-align: center;
+  margin: 0px;
+  padding-top: 25px;
+  padding-bottom: 40px;
+}
+
+/** The main CSS styles for the GWT widgets */
+
+/** The CSS rules for the GWT label widget
+    Several label styles inherit from this style */
+.gwt-Label,
+.titleLabel,
+.featureLabel,
+.descriptionLabel,
+.instructionsLabel {
+  color: black;
+  font-family: sans-serif;
+  font-size: 1.15em;
+  letter-spacing: 0px;
+  padding-bottom: 4px;
+}
+
+/** The CSS rules for the GWT anchor widget
+    Several label styles inherit from this style */
+.gwt-Anchor,
+.bookmarkletAnchor,
+.bookmarksAnchor {
+  width: 145px;
+  height: 24px;
+  font-family: proxima-nova, Helvetica Neue, Helvetica, Arial, sans-serif;
+  font-size: 20px;
+  font-weight: 700;
+  border: 1px solid;
+  border-radius: 4px;
+  text-align: center;
+  line-height: 1;
+  padding: 11px 45px;
+  color: #fff;
+  transition: background-position .1s linear;
+  text-decoration: none;
+  display: inline-block;
+  box-shadow: inset 0 1px 1px hsla(0, 0%, 100%, .4);
+  background-repeat: repeat-x;
+  margin-left: 150px;
+  -webkit-transition: background-position .1s linear
+}
+
+/** The CSS rules for the hover selector effect of the GWT anchor widget
+    Change the style of the anchor when the mouse is moved over it
+    Several label styles inherit from this style */
+.gwt-Anchor:hover,
+.bookmarkletAnchor:hover,
+.bookmarksAnchor:hover {
+  background-image: none;
+  transition: background-position .1s linear;
+}
+
+/** The CSS styles for the GWT label widgets */
+
+/** The CSS rules for the title label (Java: titleLabel)
+    Inherits gwt-Label CSS style */
+.titleLabel {
+  font-weight: bold;
+  font-size: 1.875em;
+  margin: auto;
+  text-align: center;
+  padding-bottom: 25px;
+}
+
+.containerPanel {
+  width: 95%;
+  height: 95%;
+  padding-top: 25px;
+  padding-bottom: 20px;
+}
+
+/** The CSS rules for the feature labels of the welcome page
+    (Java: bookmarkletLabel and bookmarksLabel)
+    Inherits gwt-Label CSS style */
+.featureLabel {
+  font-weight: bold;
+  font-size: 1.5em;
+  margin-bottom: 50px;
+  margin-left: 50px;
+}
+
+/** The CSS rules for the description labels of the welcome page
+    (Java: bookmarkletDescriptionLabel and bookmarksDescriptionLabel)
+    Inherits gwt-Label CSS style */
+.descriptionLabel {
+  padding-top: 5px;
+  padding-bottom: 0px;
+  margin-bottom: 80px;
+  margin-left: 120px;
+}
+
+/** The CSS rules for the instructions labels of the welcome page
+    (Java: bookmarkletInstructionsLabel and bookmarksInstructionsLabel)
+    Inherits gwt-Label CSS style */
+.instructionsLabel {
+  padding-top: 5px;
+  padding-bottom: 0px;
+  margin-top: 20px;
+  margin-bottom: 50px;
+  margin-right: 7px;
+  margin-left: 150px;
+  font-weight: bold;
+  font-size: 1em;
+}
+
+/** The CSS styles for the GWT anchor widgets */
+
+/** The CSS rules for the bookmarklet anchor (Java: bookmarkletAnchor)
+    Inherits gwt-Anchor CSS style */
+.bookmarkletAnchor {
+  background-color: #639a67;
+  border-color: #0b8457;
+  text-shadow: 0 -1px 0 rgba(43, 88, 12, .5);
+  background-image: -webkit-gradient(linear, left top, left bottom, from(#7baf7e), to(#639a67));
+  background-image: linear-gradient(180deg, #7baf7e 0, #639a67);
+}
+
+/** The CSS rules for the hover selector effect of the bookmarklet anchor
+    Change the style of the anchor when the mouse is moved over it */
+.bookmarkletAnchor:hover {
+  background-color: #639a67;
+}
+
+/** The CSS rules for the bookmarks anchor (Java: bookmarksAnchor)
+    Inherits gwt-Anchor CSS style */
+.bookmarksAnchor {
+  background-color: #0c7b93;
+  border-color: #27496d;
+  text-shadow: 0 -1px 0 rgba(20, 40, 80, .5);
+  background-image: -webkit-gradient(linear, left top, left bottom, from(#21899e), to(#0c7b93));
+  background-image: linear-gradient(180deg, #21899e 0, #0c7b93);
+}
+
+/** The CSS rules for the hover selector effect of the bookmarks anchor
+    Change the style of the anchor when the mouse is moved over it */
+.bookmarksAnchor:hover {
+  background-color: #0c7b93;
 }

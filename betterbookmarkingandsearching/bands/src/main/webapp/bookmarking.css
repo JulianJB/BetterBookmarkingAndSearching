@@ -42,6 +42,7 @@
     font-size: 17px;
     margin-top: 5px;
     margin-bottom: 15px;
+    resize: none;
 }
 
 /** The CSS rules for the GWT button widget

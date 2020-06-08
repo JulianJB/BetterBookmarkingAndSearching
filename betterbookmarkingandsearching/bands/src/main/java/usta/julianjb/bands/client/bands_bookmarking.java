@@ -142,9 +142,6 @@ public class bands_bookmarking implements EntryPoint {
                 public void onClick(ClickEvent clickEvent) {
                     // Open a new tab in the web browser with the url of the anchor element
                     Window.open(bookmark.getUrlEncoded(), "_blank", "");
-                    // DEBUG: Log the url value of the anchor element to the console
-                    logger.log(Level.INFO, "Log<Location Anchor> Opening bookmark with URL: "
-                            + bookmark.getUrlEncoded());
                 }
             });
             // Initialise a flow panel to act as a container of all of the bookmark information UI elements
@@ -188,9 +185,6 @@ public class bands_bookmarking implements EntryPoint {
                     containerPanel = (FlowPanel) bookmarksTable.getWidget(row, BOOKMARK_COLUMN);
                     // Obtain the anchor element from the container panel
                     locationAnchor = (Anchor) containerPanel.getWidget(ANCHOR_INDEX);
-                    // DEBUG: Print the text value of the retrieved anchor element
-                    logger.log(Level.INFO, "Bookmark Location element (Edit Button): "
-                            + locationAnchor.getText());
                     // Proceed to request the retrieval of the bookmark information from the database
                     getBookmark(locationAnchor.getText());
                 }
@@ -208,9 +202,6 @@ public class bands_bookmarking implements EntryPoint {
                     containerPanel = (FlowPanel) bookmarksTable.getWidget(row, BOOKMARK_COLUMN);
                     // Obtain the anchor element from the container panel
                     locationAnchor = (Anchor) containerPanel.getWidget(ANCHOR_INDEX);
-                    // DEBUG: Print the text value of the retrieved anchor element
-                    logger.log(Level.INFO, "Bookmark Location element (Remove Button): "
-                            + locationAnchor.getText());
                     // Clear all the UI elements in the bookmarks panel so that
                     // it can be refreshed with the updated bookmarks
                     bmBookmarksPanel.clear();
@@ -275,9 +266,6 @@ public class bands_bookmarking implements EntryPoint {
                 // If the list item selected is the "All" element, retrieve the bookmarks
                 // without any filter.
                 if (listName.equals("All")) {
-                    // DEBUG: Log the text value of the list item to the console
-                    logger.log(Level.INFO, "Log<List Selector> List item \"All\" selected: "
-                            + listName);
                     // Clear all the UI elements in the bookmarks panel so that
                     // it can be refreshed with the updated bookmarks
                     bmBookmarksPanel.clear();
@@ -286,15 +274,9 @@ public class bands_bookmarking implements EntryPoint {
                 } else if (listName.equals("Manage lists...")) {
                     // If the list item selected is the "Manage lists..." element
                     // call the method to manage the lists from the database.
-                    // DEBUG: Log the text value of the list item to the console
-                    logger.log(Level.INFO, "Log<List Selector> List item \"Manage lists...\" selected: "
-                            + listName);
                     // Request the list manager window to manage the lists
                     showListManager();
                 } else { // Retrieve the bookmarks with the corresponding list filter
-                    // DEBUG: Log the text value of the list item to the console
-                    logger.log(Level.INFO, "Log<List Selector> List item selected: "
-                            + listName);
                     // Clear all the UI elements in the bookmarks panel so that
                     // it can be refreshed with the updated bookmarks
                     bmBookmarksPanel.clear();
@@ -384,9 +366,6 @@ public class bands_bookmarking implements EntryPoint {
                 // If the list item selected is the "New list..." element
                 // call the method to create a new list.
                 if (listName.equals("New list...")) {
-                    // DEBUG: Log the text value of the list item to the console
-                    logger.log(Level.INFO, "Log<List Selector> List item \"New list...\" selected: "
-                            + listName);
                     // Create a Bookmark object to temporarily store the bookmark
                     // information values from the bookmarks editor.
                     Bookmark temporaryBookmark;
@@ -397,10 +376,8 @@ public class bands_bookmarking implements EntryPoint {
                     bookmarksEditor.hide();
                     // Request the list creator window to create a new list
                     showListCreator(temporaryBookmark);
-                } else { // Do not perform any action
-                    // DEBUG: Log the text value of the list item to the console
-                    logger.log(Level.INFO, "Log<List Selector> List item selected: "
-                            + listName);
+                } else {
+                    // Do not perform any action
                 }
             }
         });
@@ -656,9 +633,6 @@ public class bands_bookmarking implements EntryPoint {
                     String listName;
                     // Obtain the value of the list name field from the lists table
                     listName = listsTable.getText(row, LIST_COLUMN);
-                    // DEBUG: Print the text value of the retrieved list name element
-                    logger.log(Level.INFO, "List Name element: "
-                            + listName);
                     // Proceed to request the removal of a list in the database
                     removeList(listName);
                     // Close the list manager window
@@ -741,7 +715,7 @@ public class bands_bookmarking implements EntryPoint {
         urlEncoded = Window.Location.getParameter("url");
         // By default, at creation all of the bookmarks are assigned to the "General" list
         list = "General";
-        // DEBUG: Log the parameters values to the console
+        // Log the parameters values to the console
         logger.log(Level.INFO, "Log<Page Title>: " + pageTitle);
         logger.log(Level.INFO, "Log<Page Description>: " + pageDescription);
         logger.log(Level.INFO, "Log<URL>: " + urlEncoded);
