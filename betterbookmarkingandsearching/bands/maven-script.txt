@@ -1,0 +1,15 @@
+betterbookmarkingandseaching
+
+maven generate script
+
+Terminal (Linux)
+
+mvn archetype:generate \
+   -DarchetypeGroupId=org.codehaus.mojo \
+   -DarchetypeArtifactId=gwt-maven-plugin \
+   -DarchetypeVersion=2.9.0
+   -DgroupId=usta.julianjb.bands -DartifactId=bands
+
+CMD (Windows)
+
+mvn archetype:generate -DarchetypeGroupId=org.codehaus.mojo -DarchetypeArtifactId=gwt-maven-plugin -DarchetypeVersion=2.9.0 -DgroupId=usta.julianjb.bands -DartifactId=bands
