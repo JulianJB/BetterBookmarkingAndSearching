@@ -157,6 +157,7 @@
           gwt-maven-plugin documentation at codehaus.org -->
         <configuration>
           <runTarget>index.html</runTarget>
+          <!-- Specify all of the modules of the application -->
           <modules>
             <module>usta.julianjb.bands.bands_gwt</module>
             <module>usta.julianjb.bands.bands_bookmarking</module>

@@ -88,6 +88,9 @@
 /** The CSS rules for the button Edit (Java: editButton)
     Inherits gwt-Button CSS style */
 .editButton {
+    /** Icons taken from the "Remix Icon" open source icon library,
+    which is licensed under the Apache License Version 2.0.
+    For more information visit: https://remixicon.com */
     background-image: url("resources/images/edit.png");
     background-repeat: no-repeat;
     background-color: transparent;
@@ -111,6 +114,9 @@
 /** The CSS rules for the button Delete (Java: removeButton)
     Inherits gwt-Button CSS style */
 .removeButton {
+    /** Icons taken from the "Remix Icon" open source icon library,
+    which is licensed under the Apache License Version 2.0.
+    For more information visit: https://remixicon.com */
     background-image: url("resources/images/delete.png");
     background-repeat: no-repeat;
     background-color: transparent;

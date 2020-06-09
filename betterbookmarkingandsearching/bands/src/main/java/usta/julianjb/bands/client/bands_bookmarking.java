@@ -730,8 +730,8 @@ public class bands_bookmarking implements EntryPoint {
                 // Logging the request response
                 logger.log(Level.INFO, "The POST request was successfully handled");
                 // Calls are asynchronous but the database only supports one connection at a time
-                // Proceed to retrieve the bookmarks from the database
-                getBookmarks();
+                // Proceed to retrieve the lists from the database
+                getLists("bmMainPanel");
             }
 
             // If the POST request is not handled correctly throw an exception
