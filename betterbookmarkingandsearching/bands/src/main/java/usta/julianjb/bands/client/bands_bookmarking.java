@@ -16,6 +16,7 @@ import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HorizontalPanel;
+import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.RootPanel;
@@ -57,9 +58,13 @@ public class bands_bookmarking implements EntryPoint {
         final RootPanel rootPanel = RootPanel.get("bookmarkingPanel");
         // A vertical panel widget to display elements into the root panel
         VerticalPanel bmMainPanel;
+        // An horizontal panel widget to display the title elements into the main panel
+        HorizontalPanel bmTitlePanel;
         // Initialise the main user interface (UI) elements of the bookmarking module
         // Instance a vertical panel to act as a container of all of the main UI elements
         bmMainPanel = new VerticalPanel();
+        // Instance a horizontal panel to act as a container of all of the title elements
+        bmTitlePanel = new HorizontalPanel();
         // Instance a horizontal panel to act as a container of all of the filtering elements
         bmFilterPanel = new HorizontalPanel();
         // Set the CSS style to the filtering panel
@@ -70,8 +75,26 @@ public class bands_bookmarking implements EntryPoint {
         final Label titleLabel = new Label("My bookmarks");
         // Set the CSS style to the title label
         titleLabel.setStyleName("titleLabel");
-        // Add the title label to the main panel
-        bmMainPanel.add(titleLabel);
+        // Add the title label to the title panel
+        bmTitlePanel.add(titleLabel);
+        // Instance a button for the help window of the bookmarking module
+        final Button helpButton = new Button();
+        // Set the tooltip text for the help button
+        helpButton.setTitle("Help");
+        // Set the CSS style to the help button
+        helpButton.addStyleName("helpButton");
+        // Adding the click handler method for the help button
+        helpButton.addClickHandler(new ClickHandler() {
+            @Override
+            public void onClick(ClickEvent clickEvent) {
+                // Show the help window of the bookmarking system
+                showHelp();
+            }
+        });
+        // Add the help button to the title panel
+        bmTitlePanel.add(helpButton);
+        // Add the title panel to the main panel
+        bmMainPanel.add(bmTitlePanel);
         // Add the filtering panel to the main panel
         bmMainPanel.add(bmFilterPanel);
         // Add the bookmarks panel to the main panel
@@ -227,6 +250,186 @@ public class bands_bookmarking implements EntryPoint {
         }
         // Add the bookmarks table to the bookmarks panel
         bmBookmarksPanel.add(bookmarksTable);
+        // Display the credits information of the bookmarking system
+        showCredits();
+    }
+
+    // Show the credits information of the bookmarking system
+    private void showCredits() {
+        // The UI elements of the credits section
+        final HorizontalPanel creditsPanel = new HorizontalPanel();
+        final Label creditsLabel = new Label("BANDS: Better bookmarking and searching");
+        final Anchor homeAnchor = new Anchor("Home");
+        final Anchor helpAnchor = new Anchor("Help");
+        // Set the CSS style for the anchor elements of the credits panel
+        homeAnchor.setStyleName("creditsAnchor");
+        helpAnchor.setStyleName("creditsAnchor");
+        // Adding the click handler method for the Home anchor element
+        homeAnchor.addClickHandler(new ClickHandler() {
+            @Override
+            public void onClick(ClickEvent clickEvent) {
+                // Open a new tab in the web browser with the url of homepage
+                Window.open("http://127.0.0.1:8888/index.html", "_blank", "");
+            }
+        });
+        // Adding the click handler method for the Help anchor element
+        helpAnchor.addClickHandler(new ClickHandler() {
+            @Override
+            public void onClick(ClickEvent clickEvent) {
+                // Show the help window of the bookmarking system
+                showHelp();
+            }
+        });
+        // Add the credits information elements to the credits panel
+        creditsPanel.add(creditsLabel);
+        creditsPanel.add(homeAnchor);
+        creditsPanel.add(helpAnchor);
+        // Set the CSS style of the credits panel
+        creditsPanel.setStyleName("creditsPanel");
+        // Add the credits panel to the bookmarks panel
+        bmBookmarksPanel.add(creditsPanel);
+    }
+
+    // Show a help window with information on how to use the bookmarking system
+    private void showHelp() {
+        // The UI elements of the help window
+        DialogBox helpWindow;
+        FlowPanel containerPanel;
+        HorizontalPanel instructionsPanel;
+        HorizontalPanel buttonsPanel;
+        Label instructionsTitleLabel;
+        Label instructionsContentLabel;
+        Label instructionsHighlightLabel;
+        Image instructionsImage;
+        Button closeButton;
+        // Initialise the UI elements for the help window
+        // Instance a dialog box to act as a pop-up window and set its display properties
+        helpWindow = new DialogBox();
+        // Disable the background by blurring it with a dim color (requires CSS styling)
+        helpWindow.setGlassEnabled(true);
+        // Enable animation features for the widget
+        helpWindow.setAnimationEnabled(true);
+        // Set a title for the help window
+        helpWindow.setText("How to use the bookmarking system");
+        // Instance the UI elements of the help window with their default values
+        containerPanel = new FlowPanel();
+        instructionsPanel = new HorizontalPanel();
+        buttonsPanel = new HorizontalPanel();
+        // Initialise the title label, set its CSS style, and add it
+        // to the container panel.
+        instructionsTitleLabel = new Label("Editing a bookmark");
+        instructionsTitleLabel.setStyleName("instructionsTitleLabel");
+        containerPanel.add(instructionsTitleLabel);
+        // Initialise the image widget, set its size, and retrieve
+        // the corresponding image from the URL.
+        instructionsImage = new Image();
+        instructionsImage.setWidth("36px");
+        instructionsImage.setUrl("../resources/images/edit.png");
+        // Add the image to the instructions panel
+        instructionsPanel.add(instructionsImage);
+        // Initialise the content label, set its CSS style, and add it
+        // to the instructions panel.
+        instructionsContentLabel = new Label("Click this button to edit a bookmark");
+        instructionsContentLabel.setStyleName("instructionsContentLabel");
+        instructionsPanel.add(instructionsContentLabel);
+        // Set the CSS style for the instructions panel of the help window
+        instructionsPanel.setStyleName("instructionsPanel");
+        // Add the instructions panel to the container panel
+        containerPanel.add(instructionsPanel);
+        // Instance the UI elements of the help window with their default values
+        instructionsPanel = new HorizontalPanel();
+        // Initialise the title label, set its CSS style, and add it
+        // to the container panel.
+        instructionsTitleLabel = new Label("Deleting a bookmark");
+        instructionsTitleLabel.setStyleName("instructionsTitleLabel");
+        containerPanel.add(instructionsTitleLabel);
+        // Initialise the image widget, set its size, and retrieve
+        // the corresponding image from the URL.
+        instructionsImage = new Image();
+        instructionsImage.setWidth("36px");
+        instructionsImage.setUrl("../resources/images/delete.png");
+        // Add the image to the instructions panel
+        instructionsPanel.add(instructionsImage);
+        // Initialise the content label, set its CSS style, and add it
+        // to the instructions panel.
+        instructionsContentLabel = new Label("Click this button to delete a bookmark");
+        instructionsContentLabel.setStyleName("instructionsContentLabel");
+        instructionsPanel.add(instructionsContentLabel);
+        // Set the CSS style for the instructions panel of the help window
+        instructionsPanel.setStyleName("instructionsPanel");
+        // Add the instructions panel to the container panel
+        containerPanel.add(instructionsPanel);
+        // Instance the UI elements of the help window with their default values
+        instructionsPanel = new HorizontalPanel();
+        // Initialise the title label, set its CSS style, and add it
+        // to the container panel.
+        instructionsTitleLabel = new Label("Creating a list");
+        instructionsTitleLabel.setStyleName("instructionsTitleLabel");
+        containerPanel.add(instructionsTitleLabel);
+        // Initialise the content label, and add it to the instructions panel
+        instructionsContentLabel = new Label("Open the Bookmarks Editor " +
+                "and click on the List item box to select the option");
+        instructionsPanel.add(instructionsContentLabel);
+        // Initialise the highlighted label, set its CSS style, and add it
+        // to the instructions panel.
+        instructionsHighlightLabel = new Label("New list...");
+        instructionsHighlightLabel.setStyleName("instructionsHighlightLabel");
+        instructionsPanel.add(instructionsHighlightLabel);
+        // Set the CSS style for the instructions panel of the help window
+        instructionsPanel.setStyleName("instructionsPanel");
+        // Add the instructions panel to the container panel
+        containerPanel.add(instructionsPanel);
+        // Instance the UI elements of the help window with their default values
+        instructionsPanel = new HorizontalPanel();
+        // Initialise the title label, set its CSS style, and add it
+        // to the container panel.
+        instructionsTitleLabel = new Label("Deleting a list");
+        instructionsTitleLabel.setStyleName("instructionsTitleLabel");
+        containerPanel.add(instructionsTitleLabel);
+        // Initialise the content label, and add it to the instructions panel
+        instructionsContentLabel = new Label("Click on the Filter by List " +
+                "item box to select the option");
+        instructionsPanel.add(instructionsContentLabel);
+        // Initialise the highlighted label, set its CSS style, and add it
+        // to the instructions panel.
+        instructionsHighlightLabel = new Label("Manage lists...");
+        instructionsHighlightLabel.setStyleName("instructionsHighlightLabel");
+        instructionsPanel.add(instructionsHighlightLabel);
+        // Set the CSS style for the instructions panel of the help window
+        instructionsPanel.setStyleName("instructionsPanel");
+        // Add the instructions panel to the container panel
+        containerPanel.add(instructionsPanel);
+        // Initialise the button for the help window
+        closeButton = new Button();
+        closeButton.setText("Close");
+        // Set the CSS style to the close button
+        closeButton.setStyleName("closeButton");
+        // Adding the click handler method for the button
+        // The click handler method for the "Close" button
+        closeButton.addClickHandler(new ClickHandler() {
+            @Override
+            public void onClick(ClickEvent clickEvent) {
+                // Close the help window
+                helpWindow.hide();
+            }
+        });
+        // Adding the remaining UI elements of the help window hierarchically
+        // Add the close button to the buttons panel
+        buttonsPanel.add(closeButton);
+        // Set the CSS style to the buttons panel of the help window
+        buttonsPanel.setStyleName("buttonsPanel");
+        // Add a break line in HTML to separate the widgets
+        containerPanel.add(new HTML("&nbsp;"));
+        // Add the buttons panel to the container panel
+        containerPanel.add(buttonsPanel);
+        // Set the CSS style to the container panel of the help window
+        containerPanel.setStyleName("widgetPanel");
+        // Add the container panel to the help window
+        helpWindow.add(containerPanel);
+        // Position the help window at the center of the screen
+        helpWindow.center();
+        // Show the help window
+        helpWindow.show();
     }
 
     // Show all of the themes available for the bookmarking module

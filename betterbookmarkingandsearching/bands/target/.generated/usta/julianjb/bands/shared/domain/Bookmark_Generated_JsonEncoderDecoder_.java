@@ -10,10 +10,10 @@ public class Bookmark_Generated_JsonEncoderDecoder_ extends org.fusesource.resty
     if( value==null ) {
       return getNullType();
     }
-      return encodeBookmark1459901127(value);
+      return encodeBookmark1055057023(value);
     }
     
-    private com.google.gwt.json.client.JSONValue encodeBookmark1459901127( usta.julianjb.bands.shared.domain.Bookmark value) {
+    private com.google.gwt.json.client.JSONValue encodeBookmark1055057023( usta.julianjb.bands.shared.domain.Bookmark value) {
       com.google.gwt.json.client.JSONObject rc = new com.google.gwt.json.client.JSONObject();
       usta.julianjb.bands.shared.domain.Bookmark parseValue = (usta.julianjb.bands.shared.domain.Bookmark)value;
       isNotNullValuePut(STRING.encode(parseValue.getPageTitle()), rc, "pageTitle");
@@ -28,10 +28,10 @@ public class Bookmark_Generated_JsonEncoderDecoder_ extends org.fusesource.resty
         return null;
       }
       com.google.gwt.json.client.JSONObject object = toObject(value);
-        return decodeBookmark1459901127(object);
+        return decodeBookmark1055057023(object);
       }
       
-      private usta.julianjb.bands.shared.domain.Bookmark decodeBookmark1459901127(com.google.gwt.json.client.JSONObject object) {
+      private usta.julianjb.bands.shared.domain.Bookmark decodeBookmark1055057023(com.google.gwt.json.client.JSONObject object) {
         // We found a creator so we use the annotated constructor
         usta.julianjb.bands.shared.domain.Bookmark rc = new usta.julianjb.bands.shared.domain.Bookmark(
           // The arguments are placed in the order they appear within the annotated constructor

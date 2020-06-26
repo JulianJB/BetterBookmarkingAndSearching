@@ -15,15 +15,20 @@ body {
 .titleLabel,
 .nameLabel,
 .listFilterLabel,
-.themeSelectorLabel {
+.themeSelectorLabel,
+.instructionsTitleLabel,
+.instructionsContentLabel,
+.instructionsHighlightLabel {
     color: black;
     font-size: 17px;
     letter-spacing: 0px;
     padding-bottom: 4px;
 }
 
-/** The CSS rules for the GWT anchor widget */
-.gwt-Anchor {
+/** The CSS rules for the GWT anchor widget
+    Several anchor styles inherit from this style */
+.gwt-Anchor,
+.creditsAnchor {
     font-size: 17px;
     padding-bottom: 4px;
     color: #1c1c1c;
@@ -31,7 +36,8 @@ body {
 
 /** The CSS rules for the hover selector effect of the GWT anchor
     Change the style of the anchor when the mouse is moved over it */
-.gwt-Anchor:hover {
+.gwt-Anchor:hover,
+.creditsAnchor:hover {
     color: #0c7b93;
 }
 
@@ -63,6 +69,12 @@ body {
 .closeButton {
     font-size: 16px;
     padding: 1px;
+}
+
+/** The CSS styles for the GWT image widget */
+.gwt-Image {
+    margin-left: 40px;
+    margin-right: 30px;
 }
 
 /** The CSS styles for the GWT label widgets */
@@ -100,10 +112,40 @@ body {
     padding-bottom: 0px;
 }
 
+/** The CSS rules for the instructions title label (Java: instructionsTitleLabel)
+    Inherits gwt-Label CSS style */
+.instructionsTitleLabel {
+    font-size: 18px;
+    font-weight: bold;
+    padding-top: 14px;
+    padding-bottom: 17px;
+}
+
+/** The CSS rules for the instructions content label (Java: instructionsContentLabel)
+    Inherits gwt-Label CSS style */
+.instructionsContentLabel {
+    margin-top: 7px;
+}
+
+/** The CSS rules for the instructions highlight label (Java: instructionsHighlightLabel)
+    Inherits gwt-Label CSS style */
+.instructionsHighlightLabel {
+    text-decoration: underline;
+    font-weight: bold;
+    margin-left: 6px;
+}
+
+/** The CSS styles for the GWT anchor widgets */
+
+/** The CSS rules for the credits anchor (Java: homeAnchor and helpAnchor)
+    Inherits gwt-Anchor CSS style */
+.creditsAnchor {
+    margin-left: 15px;
+}
+
 /** The CSS styles for the GWT button widgets */
 
-/** The CSS rules for the button Edit (Java: editButton)
-    Inherits gwt-Button CSS style */
+/** The CSS rules for the button Edit (Java: editButton) */
 .editButton {
     /** Icons taken from the "Eva Icons" open source icon library,
     which is licensed under the MIT License.
@@ -128,8 +170,7 @@ body {
     background-image: url("resources/images/edit_hover.png");
 }
 
-/** The CSS rules for the button Delete (Java: removeButton)
-    Inherits gwt-Button CSS style */
+/** The CSS rules for the button Delete (Java: removeButton) */
 .removeButton {
     /** Icons taken from the "Eva Icons" open source icon library,
     which is licensed under the MIT License.
@@ -151,6 +192,33 @@ body {
     Change the style of the button when the mouse is moved over it */
 .removeButton:hover {
     background-image: url("resources/images/delete_hover.png");
+}
+
+/** The CSS rules for the button Help (Java: helpButton) */
+.helpButton {
+    /** Icons taken from the "Eva Icons" open source icon library,
+    which is licensed under the MIT License.
+    For more information visit: https://akveo.github.io/eva-icons */
+    background-image: url("resources/images/help.png");
+    background-repeat: no-repeat;
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
+    overflow: hidden;
+    outline: none;
+    height: 32px;
+    width: 32px;
+    margin-top: 28px;
+    margin-right: 20px;
+    margin-left: 15px;
+    float: left;
+    padding: 0px;
+}
+
+/** The CSS rules for the hover selector effect of the Edit button
+    Change the style of the button when the mouse is moved over it */
+.helpButton:hover {
+    background-image: url("resources/images/help_hover.png");
 }
 
 /** The CSS rules for the button Close (Java: closeButton)
@@ -225,6 +293,19 @@ body {
 .buttonsPanel {
     float: left;
     clear: none;
+}
+
+/** The CSS rules of the container panel for the credits
+    elements (Java: creditsPanel) */
+.creditsPanel {
+    margin-top: 30px;
+    margin-left: 40px;
+}
+
+/** The CSS rules of the container panel for the instructions
+    of the help window (Java: instructionsPanel) */
+.instructionsPanel {
+    display: inline;
 }
 
 /** The CSS styles for the GWT table widgets */
