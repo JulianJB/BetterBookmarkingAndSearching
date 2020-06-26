@@ -2,10 +2,16 @@
 
 /** The main CSS styles for the HTML elements */
 
+/** The CSS rules for the body element */
+body {
+  font-family: proxima-nova, Helvetica, Arial, sans-serif;
+}
+
+/** The main CSS styles for the HTML elements */
+
 /** The CSS rules for the paragraph element */
 p {
   color: black;
-  font-family: sans-serif;
   font-size: 1.875em;
   font-weight: bold;
   letter-spacing: 0px;
@@ -25,7 +31,6 @@ p {
 .descriptionLabel,
 .instructionsLabel {
   color: black;
-  font-family: sans-serif;
   font-size: 1.15em;
   letter-spacing: 0px;
   padding-bottom: 4px;
@@ -38,7 +43,6 @@ p {
 .bookmarksAnchor {
   width: 145px;
   height: 24px;
-  font-family: proxima-nova, Helvetica Neue, Helvetica, Arial, sans-serif;
   font-size: 20px;
   font-weight: 700;
   border: 1px solid;

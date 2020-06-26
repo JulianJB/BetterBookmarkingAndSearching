@@ -21,9 +21,9 @@ import java.util.List;
 public interface BookmarkClient extends RestService {
 
     /**
-     * Note: Apparently, RestyGWT cannot define REST requests where
-     * the MethodCallback object returned is of an ArrayList type
-     * (which is serializable), so use List type instead for the client-side.
+     * Note: RestyGWT cannot define REST requests where the MethodCallback
+     * object returned is of an ArrayList type (which is serializable),
+     * so use List type instead for the client-side.
      * In the server-side is valid to use an ArrayList as a return type
      * for the request callback.
      */

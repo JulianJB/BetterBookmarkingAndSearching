@@ -94,13 +94,6 @@
       <version>2.11.0</version>
       <scope>provided</scope>
     </dependency>
-    <!-- Java Servlet API, required to create a servlet for GWT -->
-    <dependency>
-      <groupId>javax.servlet</groupId>
-      <artifactId>javax.servlet-api</artifactId>
-      <version>4.0.1</version>
-      <scope>provided</scope>
-    </dependency>
     <!-- Workaround for https://stackoverflow.com/questions/44088493/jersey-stopped-working-with-injectionmanagerfactory-not-found -->
     <dependency>
       <groupId>org.glassfish.jersey.inject</groupId>
@@ -137,7 +130,6 @@
   <build>
     <!-- Output classes directly into the webapp, so that IDEs and "mvn process-classes" update them in DevMode -->
     <outputDirectory>${project.build.directory}/${project.build.finalName}/WEB-INF/classes</outputDirectory>
-
     <plugins>
       <!-- Mojo's Maven Plugin for GWT -->
       <plugin>

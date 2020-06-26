@@ -2,6 +2,7 @@ package usta.julianjb.bands.client;
 
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.dom.client.Document;
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -22,14 +23,9 @@ import com.google.gwt.user.client.ui.TextArea;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import org.fusesource.restygwt.client.Defaults;
-import org.fusesource.restygwt.client.Method;
-import org.fusesource.restygwt.client.MethodCallback;
-import usta.julianjb.bands.client.api.client.BookmarkClient;
 import usta.julianjb.bands.shared.domain.Bookmark;
 
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  * The EntryPoint of the Bookmarking module.
@@ -37,26 +33,24 @@ import java.util.logging.Logger;
  */
 public class bands_bookmarking implements EntryPoint {
 
-    // A logger to keep track of the requests handled by the module
-    private Logger logger;
-
-    // An instance of the client interface to perform REST requests
-    private BookmarkClient client;
+    // An instance of the Bookmark Request class to perform REST requests
+    private BookmarkRequest bmRequest;
 
     // A horizontal panel widget to display the filtering elements into the main panel
     private HorizontalPanel bmFilterPanel;
+
+    // A horizontal panel widget to display the list filtering elements
+    private HorizontalPanel bmListPanel;
 
     // A vertical panel widget to display the bookmarks into the main panel
     private VerticalPanel bmBookmarksPanel;
 
     // A List of String objects containing the retrieved lists from the database
     // Required to be a global variable since it is accessed from different parts of the module
-    private List<String> lists;
+    protected List<String> lists;
 
     // The code to be executed once the Bookmarking module is loaded
     public void onModuleLoad() {
-        // Initialising the Logger for the bookmarking module
-        logger = java.util.logging.Logger.getLogger("Bookmarking Module Log");
         // Start the REST service of the Bookmarking module
         Defaults.setServiceRoot(GWT.getHostPageBaseURL());
         // Map a div element of the HTML file as the Root Panel of the application
@@ -84,16 +78,19 @@ public class bands_bookmarking implements EntryPoint {
         bmMainPanel.add(bmBookmarksPanel);
         // Add the main panel to the root panel of the module
         rootPanel.add(bmMainPanel);
-        // Create the instance of the client interface to perform REST requests
-        client = GWT.create(BookmarkClient.class);
+        // Proceed to show the themes available for the bookmarking module
+        showThemes();
+        // Create the instance of the Bookmark Request class to perform REST requests
+        bmRequest = new BookmarkRequest(this);
         // Checking if there is a query string with the Client request
-        // Calls are asynchronous but the database only supports one connection at a time
+        // The database supports multiple connections at a time but calls are asynchronous,
+        // so the system should wait to dispatch a call first.
         if (!Window.Location.getQueryString().isEmpty()) {
             // There is a query string within the request, proceed to create the bookmark
-            createBookmark();
+            bmRequest.createBookmark();
         } else {
             // There is not a query string within the request, proceed to retrieve the lists
-            getLists("bmMainPanel");
+            bmRequest.getLists("bmMainPanel");
         }
     }
 
@@ -101,7 +98,7 @@ public class bands_bookmarking implements EntryPoint {
      * The Graphic User Interface (GUI) methods
      */
     // Show all of the bookmarks retrieved from the database
-    private void showBookmarks(List<Bookmark> bookmarks) {
+    protected void showBookmarks(List<Bookmark> bookmarks) {
         // A flex table widget to display the bookmarks
         FlexTable bookmarksTable;
         // The UI elements of the bookmarks table
@@ -186,7 +183,7 @@ public class bands_bookmarking implements EntryPoint {
                     // Obtain the anchor element from the container panel
                     locationAnchor = (Anchor) containerPanel.getWidget(ANCHOR_INDEX);
                     // Proceed to request the retrieval of the bookmark information from the database
-                    getBookmark(locationAnchor.getText());
+                    bmRequest.getBookmark(locationAnchor.getText());
                 }
             });
             // The click handler method for the "Delete Bookmark" button
@@ -202,11 +199,18 @@ public class bands_bookmarking implements EntryPoint {
                     containerPanel = (FlowPanel) bookmarksTable.getWidget(row, BOOKMARK_COLUMN);
                     // Obtain the anchor element from the container panel
                     locationAnchor = (Anchor) containerPanel.getWidget(ANCHOR_INDEX);
-                    // Clear all the UI elements in the bookmarks panel so that
-                    // it can be refreshed with the updated bookmarks
-                    bmBookmarksPanel.clear();
-                    // Proceed to request the removal of the bookmark information from the database
-                    removeBookmark(locationAnchor.getText());
+                    // Confirm if the user wants to delete the selected bookmark
+                    if (Window.confirm("Are you sure you want to permanently delete this bookmark?")) {
+                        // The user clicked on the "OK" button
+                        // Clear all the UI elements in the bookmarks panel so that
+                        // it can be refreshed with the updated bookmarks.
+                        bmBookmarksPanel.clear();
+                        // Proceed to request the removal of the bookmark information from the database
+                        bmRequest.removeBookmark(locationAnchor.getText());
+                    } else {
+                        // The user clicked on the "Cancel" button
+                        // Dismiss the confirmation message and go back to the bookmarks manager
+                    }
                 }
             });
             // Initialise a flow panel to act as a container of all of the bookmark manager UI elements
@@ -225,10 +229,57 @@ public class bands_bookmarking implements EntryPoint {
         bmBookmarksPanel.add(bookmarksTable);
     }
 
+    // Show all of the themes available for the bookmarking module
+    private void showThemes() {
+        // A horizontal panel widget to display the themes
+        HorizontalPanel bmThemesPanel;
+        // The UI elements of the theme selector functionality
+        Label themeSelectorLabel;
+        ListBox themeSelector;
+        // Instance a horizontal panel to act as a container of the UI elements
+        // of the theme selector functionality.
+        bmThemesPanel = new HorizontalPanel();
+        // Set the CSS style to the themes panel
+        bmThemesPanel.setStyleName("bmThemesPanel");
+        // Initialise the UI elements for the theme selector functionality
+        themeSelectorLabel = new Label("Theme: ");
+        themeSelector = new ListBox();
+        // Set the CSS style to the theme selector label
+        themeSelectorLabel.setStyleName("themeSelectorLabel");
+        // Add the theme selector functionality UI elements to the themes panel
+        bmThemesPanel.add(themeSelectorLabel);
+        bmThemesPanel.add(themeSelector);
+        // Add all of the theme items to the theme selector element
+        themeSelector.addItem("Light");
+        themeSelector.addItem("Sepia");
+        themeSelector.addItem("Gray");
+        // Adding the change handler method for the theme items of the theme selector
+        themeSelector.addChangeHandler(new ChangeHandler() {
+            @Override
+            public void onChange(ChangeEvent changeEvent) {
+                // Obtain the text value of the selected theme item
+                final String themeName = themeSelector.getSelectedItemText();
+                // If the theme item selected is the "Light" element, set the background
+                // color to white.
+                if (themeName.equals("Light")) {
+                    Document.get().getBody().getStyle().setBackgroundColor("#fff");
+                } else if (themeName.equals("Sepia")) {
+                    // If the theme item selected is the "Sepia" element,
+                    // set the background color to sepia.
+                    Document.get().getBody().getStyle().setBackgroundColor("#f8f2e3");
+                } else if (themeName.equals("Gray")) {
+                    // If the theme item selected is the "Gray" element,
+                    // set the background color to gray.
+                    Document.get().getBody().getStyle().setBackgroundColor("#f0f0f0");
+                }
+            }
+        });
+        // Add the themes panel to the filtering panel
+        bmFilterPanel.add(bmThemesPanel);
+    }
+
     // Show all of the lists retrieved from the database
-    private void showLists() {
-        // A horizontal panel widget to display the list filtering elements
-        HorizontalPanel bmListPanel;
+    protected void showLists() {
         // The UI elements of the list filtering functionality
         Label listFilterLabel;
         ListBox listSelector;
@@ -270,7 +321,7 @@ public class bands_bookmarking implements EntryPoint {
                     // it can be refreshed with the updated bookmarks
                     bmBookmarksPanel.clear();
                     // Proceed to retrieve all of the bookmarks from the database
-                    getBookmarks();
+                    bmRequest.getBookmarks();
                 } else if (listName.equals("Manage lists...")) {
                     // If the list item selected is the "Manage lists..." element
                     // call the method to manage the lists from the database.
@@ -281,7 +332,7 @@ public class bands_bookmarking implements EntryPoint {
                     // it can be refreshed with the updated bookmarks
                     bmBookmarksPanel.clear();
                     // Proceed to request the bookmarks from the database with the given list filter
-                    filterBookmarks(listName);
+                    bmRequest.filterBookmarks(listName);
                 }
             }
         });
@@ -292,10 +343,11 @@ public class bands_bookmarking implements EntryPoint {
     }
 
     // Show the bookmarks editor window to edit a bookmark from the database
-    private void showBookmarksEditor(Bookmark bookmark) {
+    protected void showBookmarksEditor(Bookmark bookmark) {
         // The UI elements of the bookmarks editor
         DialogBox bookmarksEditor;
         FlowPanel containerPanel;
+        HorizontalPanel buttonsPanel;
         Label nameLabel;
         Label descriptionLabel;
         Label locationLabel;
@@ -317,6 +369,7 @@ public class bands_bookmarking implements EntryPoint {
         bookmarksEditor.setText("Edit Bookmark");
         // Instance the UI elements of the bookmarks editor with their default values
         containerPanel = new FlowPanel();
+        buttonsPanel = new HorizontalPanel();
         // Initialise the labels for the bookmarks editor
         nameLabel = new Label("Name:");
         descriptionLabel = new Label("Description:");
@@ -324,8 +377,14 @@ public class bands_bookmarking implements EntryPoint {
         listLabel = new Label("List:");
         // Initialise the text areas for the bookmarks editor with the bookmark information
         nameTextBox = new TextBox();
+        // Set a placeholder text for the Name text box
+        nameTextBox.getElement().setPropertyString("placeholder",
+                "Name (Optional)");
         nameTextBox.setText(bookmark.getPageTitle());
         descriptionTextArea = new TextArea();
+        // Set a placeholder text for the Description text area
+        descriptionTextArea.getElement().setPropertyString("placeholder",
+                "Description (Optional)");
         descriptionTextArea.setText(bookmark.getPageDescription());
         locationTextBox = new TextBox();
         locationTextBox.setText(bookmark.getUrlEncoded());
@@ -333,7 +392,7 @@ public class bands_bookmarking implements EntryPoint {
         // Initialise the list selector for the bookmarks editor
         listSelector = new ListBox();
         // Request to update the lists retrieved from the database
-        getLists("bmWidget");
+        bmRequest.getLists("bmWidget");
         // A variable to store the index value of the list item obtained from the bookmark
         int listIndex = 0;
         // Retrieve all of the lists and prepare to display them
@@ -422,12 +481,12 @@ public class bands_bookmarking implements EntryPoint {
                 editedBookmark = new Bookmark(pageTitle, pageDescription, urlEncoded, list);
                 // Close the bookmarks editor window
                 bookmarksEditor.hide();
-                // Clear all the UI elements in the filtering panel and in the bookmarks
+                // Clear all the UI elements in the list panel and in the bookmarks
                 // panel so that the UI can be refreshed with the updated content.
-                bmFilterPanel.clear();
+                bmListPanel.clear();
                 bmBookmarksPanel.clear();
                 // Proceed to request the modification of the bookmark information in the database
-                editBookmark(editedBookmark);
+                bmRequest.editBookmark(editedBookmark);
             }
         });
         // The click handler method for the "Cancel" button
@@ -436,15 +495,15 @@ public class bands_bookmarking implements EntryPoint {
             public void onClick(ClickEvent clickEvent) {
                 // Close the bookmarks editor window
                 bookmarksEditor.hide();
-                // Clear all the UI elements in the filtering panel and in the bookmarks
+                // Clear all the UI elements in the list panel and in the bookmarks
                 // panel so that the UI can be refreshed with the updated content.
-                bmFilterPanel.clear();
+                bmListPanel.clear();
                 bmBookmarksPanel.clear();
                 // The lists could have been modified via the list manager
                 // while the bookmarks editor window was active, so proceed
                 // to request to retrieve the lists so that every UI element
                 // in the Main Panel gets refreshed.
-                getLists("bmMainPanel");
+                bmRequest.getLists("bmMainPanel");
             }
         });
         // Adding the UI elements of the bookmarks editor hierarchically
@@ -462,9 +521,13 @@ public class bands_bookmarking implements EntryPoint {
         containerPanel.add(listSelector);
         // Add a break line in HTML to separate the widgets
         containerPanel.add(new HTML("&nbsp;"));
-        // Add the bookmarks editor buttons to the container panel
-        containerPanel.add(confirmButton);
-        containerPanel.add(cancelButton);
+        // Add the bookmarks editor buttons to the buttons panel
+        buttonsPanel.add(confirmButton);
+        buttonsPanel.add(cancelButton);
+        // Set the CSS style to the buttons panel of the bookmarks editor
+        buttonsPanel.setStyleName("buttonsPanel");
+        // Add the buttons panel to the container panel
+        containerPanel.add(buttonsPanel);
         // Set the CSS style to the container panel of the bookmarks editor
         containerPanel.setStyleName("widgetPanel");
         // Add the container panel to the bookmarks editor window
@@ -480,6 +543,7 @@ public class bands_bookmarking implements EntryPoint {
         // The UI elements of the list creator
         DialogBox listCreator;
         FlowPanel containerPanel;
+        HorizontalPanel buttonsPanel;
         Label listNameLabel;
         TextBox listNameTextBox;
         Button confirmButton;
@@ -495,6 +559,7 @@ public class bands_bookmarking implements EntryPoint {
         listCreator.setText("Create New List");
         // Instance the UI elements of the list creator with their default values
         containerPanel = new FlowPanel();
+        buttonsPanel = new HorizontalPanel();
         // Initialise the label for the list creator
         listNameLabel = new Label("List name:");
         // Initialise the text box for the list creator
@@ -519,7 +584,7 @@ public class bands_bookmarking implements EntryPoint {
                 // text box of the list creator.
                 listName = listNameTextBox.getText();
                 // Proceed to request the creation of a new list in the database
-                createList(listName);
+                bmRequest.createList(listName);
                 // Close the list creator window
                 listCreator.hide();
                 // A constant for setting a fixed delay time in milliseconds
@@ -528,7 +593,7 @@ public class bands_bookmarking implements EntryPoint {
                 // editor window so that the lists can be updated first.
                 // Using the Timer class instead of the Scheduler class because it performs
                 // better in this scenario (provides a smoother execution).
-                Timer timer = new Timer(){
+                Timer timer = new Timer() {
                     @Override
                     public void run() {
                         // Invoke the bookmarks editor window and return the bookmark
@@ -557,9 +622,13 @@ public class bands_bookmarking implements EntryPoint {
         containerPanel.add(listNameTextBox);
         // Add a break line in HTML to separate the widgets
         containerPanel.add(new HTML("&nbsp;"));
-        // Add the list creator buttons to the container panel
-        containerPanel.add(confirmButton);
-        containerPanel.add(cancelButton);
+        // Add the list creator buttons to the buttons panel
+        buttonsPanel.add(confirmButton);
+        buttonsPanel.add(cancelButton);
+        // Set the CSS style to the buttons panel of the list creator
+        buttonsPanel.setStyleName("buttonsPanel");
+        // Add the buttons panel to the container panel
+        containerPanel.add(buttonsPanel);
         // Set the CSS style to the container panel of the list creator
         containerPanel.setStyleName("widgetPanel");
         // Add the container panel to the list creator window
@@ -575,6 +644,7 @@ public class bands_bookmarking implements EntryPoint {
         // The UI elements of the list manager
         DialogBox listManager;
         FlowPanel containerPanel;
+        HorizontalPanel buttonsPanel;
         Button removeButton;
         Button closeButton;
         // A flex table widget to display the lists
@@ -599,8 +669,9 @@ public class bands_bookmarking implements EntryPoint {
         listsTable.setStyleName("listsTable");
         // Instance the UI elements of the list manager with their default values
         containerPanel = new FlowPanel();
+        buttonsPanel = new HorizontalPanel();
         // Request to update the lists retrieved from the database
-        getLists("bmWidget");
+        bmRequest.getLists("bmWidget");
         // Retrieve all of the lists and prepare to display them
         for (String list : lists) {
             // If the list item is the "All" element ignore it, as it
@@ -633,26 +704,33 @@ public class bands_bookmarking implements EntryPoint {
                     String listName;
                     // Obtain the value of the list name field from the lists table
                     listName = listsTable.getText(row, LIST_COLUMN);
-                    // Proceed to request the removal of a list in the database
-                    removeList(listName);
-                    // Close the list manager window
-                    listManager.hide();
-                    // A constant for setting a fixed delay time in milliseconds
-                    final int FIXED_DELAY = 500;
-                    // Schedule a fixed delay of 500 milliseconds before invoking the list
-                    // manager window so that the lists can be updated first.
-                    // Using the Timer class instead of the Scheduler class because
-                    // it performs better in this scenario (provides a smoother execution).
-                    Timer timer = new Timer(){
-                        @Override
-                        public void run() {
-                            // Invoke the list manager window so that the lists table
-                            // gets refreshed.
-                            showListManager();
-                        }
-                    };
-                    // Adding the fixed delay to the timer object
-                    timer.schedule(FIXED_DELAY);
+                    // Confirm if the user wants to delete the selected list
+                    if (Window.confirm("Are you sure you want to permanently delete this list?")) {
+                        // The user clicked on the "OK" button
+                        // Proceed to request the removal of a list in the database
+                        bmRequest.removeList(listName);
+                        // Close the list manager window
+                        listManager.hide();
+                        // A constant for setting a fixed delay time in milliseconds
+                        final int FIXED_DELAY = 500;
+                        // Schedule a fixed delay of 500 milliseconds before invoking the list
+                        // manager window so that the lists can be updated first.
+                        // Using the Timer class instead of the Scheduler class because
+                        // it performs better in this scenario (provides a smoother execution).
+                        Timer timer = new Timer() {
+                            @Override
+                            public void run() {
+                                // Invoke the list manager window so that the lists table
+                                // gets refreshed.
+                                showListManager();
+                            }
+                        };
+                        // Adding the fixed delay to the timer object
+                        timer.schedule(FIXED_DELAY);
+                    } else {
+                        // The user clicked on the "Cancel" button
+                        // Dismiss the confirmation message and go back to the list manager window
+                    }
                 }
             });
             // Add the remove button to the lists table in the corresponding column
@@ -671,21 +749,25 @@ public class bands_bookmarking implements EntryPoint {
             public void onClick(ClickEvent clickEvent) {
                 // Close the list manager window
                 listManager.hide();
-                // Clear all the UI elements in the filtering panel and in the bookmarks
+                // Clear all the UI elements in the list panel and in the bookmarks
                 // panel so that the UI can be refreshed with the updated content.
-                bmFilterPanel.clear();
+                bmListPanel.clear();
                 bmBookmarksPanel.clear();
                 // The lists could have been modified while the list manager window
                 // was active, so proceed to request to retrieve the lists so that
                 // every UI element in the Main Panel gets refreshed.
-                getLists("bmMainPanel");
+                bmRequest.getLists("bmMainPanel");
             }
         });
         // Adding the UI elements of the list manager hierarchically
         // Add the lists table to the container panel
         containerPanel.add(listsTable);
-        // Add the close button to the container panel
-        containerPanel.add(closeButton);
+        // Add the close button to the buttons panel
+        buttonsPanel.add(closeButton);
+        // Set the CSS style to the buttons panel of the list manager
+        buttonsPanel.setStyleName("buttonsPanel");
+        // Add the buttons panel to the container panel
+        containerPanel.add(buttonsPanel);
         // Set the CSS style to the container panel of the list manager
         containerPanel.setStyleName("widgetPanel");
         // Add the container panel to the list manager window
@@ -694,289 +776,5 @@ public class bands_bookmarking implements EntryPoint {
         listManager.center();
         // Show the list manager window
         listManager.show();
-    }
-
-    /**
-     * The REST requests methods
-     */
-    // Make a POST request to the server to create a bookmark in the database
-    public void createBookmark() {
-        // The variables to store the information about the bookmark (Page Title, Page Description, URL, and List)
-        String pageTitle, pageDescription, urlEncoded, list;
-        // A Bookmark object to sent within the request
-        Bookmark bookmark;
-        // Get the actual values of the parameters sent in the query string of the request
-        pageTitle = Window.Location.getParameter("title");
-        pageDescription = Window.Location.getParameter("description");
-        // If the Page Description is empty put a placeholder value instead
-        if (pageDescription.isEmpty()) {
-            pageDescription = "Bookmarked with BANDS";
-        }
-        urlEncoded = Window.Location.getParameter("url");
-        // By default, at creation all of the bookmarks are assigned to the "General" list
-        list = "General";
-        // Log the parameters values to the console
-        logger.log(Level.INFO, "Log<Page Title>: " + pageTitle);
-        logger.log(Level.INFO, "Log<Page Description>: " + pageDescription);
-        logger.log(Level.INFO, "Log<URL>: " + urlEncoded);
-        logger.log(Level.INFO, "Log<List>: " + list);
-        // Create the Bookmark object from the parameters values
-        bookmark = new Bookmark(pageTitle, pageDescription, urlEncoded, list);
-        // Request to store a bookmark in the database
-        client.createBookmark(bookmark, new MethodCallback<Void>() {
-            // If the POST request is handled correctly store the bookmark in the database
-            @Override
-            public void onSuccess(Method method, Void response) {
-                // Logging the request response
-                logger.log(Level.INFO, "The POST request was successfully handled");
-                // Calls are asynchronous but the database only supports one connection at a time
-                // Proceed to retrieve the lists from the database
-                getLists("bmMainPanel");
-            }
-
-            // If the POST request is not handled correctly throw an exception
-            @Override
-            public void onFailure(Method method, Throwable throwable) {
-                // Logging the request response
-                logger.log(Level.SEVERE, "The POST request failed");
-                throw new RuntimeException("Call failed");
-            }
-        });
-    }
-
-    // Make a GET request to the server to retrieve all of the bookmarks from the database
-    public void getBookmarks() {
-        // Request all of the Bookmark objects from the database
-        client.getBookmarks(new MethodCallback<List<Bookmark>>() {
-            // If the GET request is handled correctly display the Bookmark objects
-            @Override
-            // Using List type: see notes on BookmarkClient interface
-            public void onSuccess(Method method, List<Bookmark> response) {
-                // Logging the request response
-                logger.log(Level.INFO, "The GET request was successfully handled");
-                // Retrieve all of the Bookmark objects and send them to display in the UI
-                showBookmarks(response);
-            }
-
-            // If the GET request is not handled correctly throw an exception
-            @Override
-            public void onFailure(Method method, Throwable exception) {
-                // Logging the request response
-                logger.log(Level.SEVERE, "The GET request failed");
-                throw new RuntimeException("Call failed");
-            }
-        });
-    }
-
-    // Make a GET request to the server to retrieve a bookmark from the database using its URL value
-    public void getBookmark(String locationAnchor) {
-        // A variable to store the URL information about the bookmark
-        String urlEncoded;
-        // Get the actual value of the URL of the bookmark
-        urlEncoded = locationAnchor;
-        // Request the Bookmark object from the database
-        client.getBookmark(urlEncoded, new MethodCallback<Bookmark>() {
-            // If the GET request is handled correctly display the Bookmark object
-            @Override
-            public void onSuccess(Method method, Bookmark response) {
-                // Logging the request response
-                logger.log(Level.INFO, "The GET request was successfully handled");
-                // Retrieve the Bookmark object and send them to display in the bookmarks editor
-                showBookmarksEditor(response);
-            }
-
-            // If the GET request is not handled correctly throw an exception
-            @Override
-            public void onFailure(Method method, Throwable exception) {
-                // Logging the request response
-                logger.log(Level.SEVERE, "The GET request failed");
-                throw new RuntimeException("Call failed");
-            }
-        });
-    }
-
-    // Make a DELETE request to the server to remove a bookmark from the database
-    public void removeBookmark(String locationAnchor) {
-        // A variable to store the URL information about the bookmark
-        String urlEncoded;
-        // Get the actual value of the URL of the bookmark
-        urlEncoded = locationAnchor;
-        // Request to remove a bookmark from the database
-        client.removeBookmark(urlEncoded, new MethodCallback<Void>() {
-            // If the DELETE request is handled correctly delete the bookmark from the database
-            @Override
-            public void onSuccess(Method method, Void response) {
-                // Logging the request response
-                logger.log(Level.INFO, "The DELETE request was successfully handled");
-                // Calls are asynchronous but the database only supports one connection at a time
-                // Proceed to retrieve the bookmarks from the database
-                getBookmarks();
-            }
-
-            // If the DELETE request is not handled correctly throw an exception
-            @Override
-            public void onFailure(Method method, Throwable throwable) {
-                // Logging the request response
-                logger.log(Level.SEVERE, "The DELETE request failed");
-                throw new RuntimeException("Call failed");
-            }
-        });
-    }
-
-    // Make a PUT request to the server to edit a bookmark in the database
-    public void editBookmark(Bookmark returnedBookmark) {
-        // A variable to store the URL information about the bookmark
-        String urlEncoded;
-        // Get the actual URL value of the bookmark parameters retrieved from the Bookmark object
-        urlEncoded = returnedBookmark.getUrlEncoded();
-        // A Bookmark object to sent within the request
-        Bookmark bookmark;
-        // Get the actual parameters values of the Bookmark object
-        bookmark = returnedBookmark;
-        // Request to edit a bookmark in the database
-        client.editBookmark(urlEncoded, bookmark, new MethodCallback<Void>() {
-            // If the PUT request is handled correctly update the bookmark in the database
-            @Override
-            public void onSuccess(Method method, Void response) {
-                // Logging the request response
-                logger.log(Level.INFO, "The PUT request was successfully handled");
-                // Calls are asynchronous but the database only supports one connection at a time
-                // The lists could have been modified via the list manager
-                // while the bookmarks editor window was active, so proceed
-                // to request to retrieve the lists so that every UI element
-                // in the Main Panel gets refreshed.
-                getLists("bmMainPanel");
-            }
-
-            // If the PUT request is not handled correctly throw an exception
-            @Override
-            public void onFailure(Method method, Throwable throwable) {
-                // Logging the request response
-                logger.log(Level.SEVERE, "The PUT request failed");
-                throw new RuntimeException("Call failed");
-            }
-        });
-    }
-
-    // Make a GET request to the server to retrieve all of the lists from the database
-    public void getLists(String requestType) {
-        // Request all of the lists from the database
-        client.getLists(new MethodCallback<List<String>>() {
-            // If the GET request is handled correctly display the lists
-            @Override
-            // Using List type: see notes on BookmarkClient interface
-            public void onSuccess(Method method, List<String> response) {
-                // Logging the request response
-                logger.log(Level.INFO, "The GET request was successfully handled");
-                // Identify the type of request sent within the call to perform
-                // the respective action.
-                if (requestType.equals("bmMainPanel")) {
-                    // The request comes or handles the main panel of the bookmarking module
-                    // Retrieve all of the lists and assign them to the List of String objects
-                    lists = response;
-                    // Request to show the lists in the UI
-                    showLists();
-                    // Proceed to retrieve the bookmarks from the database
-                    getBookmarks();
-                } else if (requestType.equals("bmWidget")) {
-                    // The request comes or handles a widget of the bookmarking module
-                    // Retrieve all of the lists and assign them to the List of String objects
-                    lists = response;
-                }
-            }
-
-            // If the GET request is not handled correctly throw an exception
-            @Override
-            public void onFailure(Method method, Throwable exception) {
-                // Logging the request response
-                logger.log(Level.SEVERE, "The GET request failed");
-                throw new RuntimeException("Call failed");
-            }
-        });
-    }
-
-    // Make a GET request to the server to retrieve all of the bookmarks
-    // from the database filtered from a list.
-    public void filterBookmarks(String listName) {
-        // A variable to store the List value
-        String list;
-        // Get the actual value of the list
-        list = listName;
-        // Request all of the Bookmark objects from the database using the list value
-        client.filterBookmarks(list, new MethodCallback<List<Bookmark>>() {
-            // If the GET request is handled correctly display the Bookmark objects
-            @Override
-            // Using List type: see notes on BookmarkClient interface
-            public void onSuccess(Method method, List<Bookmark> response) {
-                // Logging the request response
-                logger.log(Level.INFO, "The GET request was successfully handled");
-                // Retrieve the filtered Bookmark objects and send them to display in the UI
-                showBookmarks(response);
-            }
-
-            // If the GET request is not handled correctly throw an exception
-            @Override
-            public void onFailure(Method method, Throwable exception) {
-                // Logging the request response
-                logger.log(Level.SEVERE, "The GET request failed");
-                throw new RuntimeException("Call failed");
-            }
-        });
-    }
-
-    // Make a POST request to the server to create a list in the database
-    public void createList(String listName) {
-        // A variable to store the list value
-        String list;
-        // Get the actual value of the list
-        // The "General" list is created by default and cannot be removed from the database
-        list = listName;
-        // Request to store a list in the database
-        client.createList(list, new MethodCallback<Void>() {
-            // If the POST request is handled correctly store the list in the database
-            @Override
-            public void onSuccess(Method method, Void response) {
-                // Logging the request response
-                logger.log(Level.INFO, "The POST request was successfully handled");
-                // Request to update the lists retrieved from the database
-                getLists("bmWidget");
-            }
-
-            // If the POST request is not handled correctly throw an exception
-            @Override
-            public void onFailure(Method method, Throwable throwable) {
-                // Logging the request response
-                logger.log(Level.SEVERE, "The POST request failed");
-                throw new RuntimeException("Call failed");
-            }
-        });
-    }
-
-    // Make a DELETE request to the server to remove a list from the database
-    public void removeList(String listName) {
-        // A variable to store the List value
-        String list;
-        // Get the actual value of the list
-        // The "General" list is created by default and cannot be removed from the database
-        list = listName;
-        // Request to remove a list from the database
-        client.removeList(list, new MethodCallback<Void>() {
-            // If the DELETE request is handled correctly delete the list from the database
-            @Override
-            public void onSuccess(Method method, Void response) {
-                // Logging the request response
-                logger.log(Level.INFO, "The DELETE request was successfully handled");
-                // Request to update the lists retrieved from the database
-                getLists("bmWidget");
-            }
-
-            // If the DELETE request is not handled correctly throw an exception
-            @Override
-            public void onFailure(Method method, Throwable throwable) {
-                // Logging the request response
-                logger.log(Level.SEVERE, "The DELETE request failed");
-                throw new RuntimeException("Call failed");
-            }
-        });
     }
 }
