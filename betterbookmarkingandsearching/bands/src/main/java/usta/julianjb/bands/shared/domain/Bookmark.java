@@ -15,6 +15,7 @@ public class Bookmark {
     public String pageDescription;
     public String urlEncoded;
     public String list;
+    public String tags;
 
     public Bookmark() {
     }
@@ -24,11 +25,13 @@ public class Bookmark {
     public Bookmark(@JsonProperty("pageTitle") String pageTitle,
                     @JsonProperty("pageDescription") String pageDescription,
                     @JsonProperty("urlEncoded") String urlEncoded,
-                    @JsonProperty("list") String list) {
+                    @JsonProperty("list") String list,
+                    @JsonProperty("tags") String tags) {
         this.pageTitle = pageTitle;
         this.pageDescription = pageDescription;
         this.urlEncoded = urlEncoded;
         this.list = list;
+        this.tags = tags;
     }
 
     // A method to query the Bookmark object by Page Title
@@ -69,5 +72,15 @@ public class Bookmark {
     // A method to set the List value of the Bookmark object
     public void setList(String list) {
         this.list = list;
+    }
+
+    // A method to query the Bookmark object by Tags
+    public String getTags() {
+        return tags;
+    }
+
+    // A method to set the Tags values of the Bookmark object
+    public void setTags(String tags) {
+        this.tags = tags;
     }
 }

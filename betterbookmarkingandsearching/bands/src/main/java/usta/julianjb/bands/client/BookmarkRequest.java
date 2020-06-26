@@ -2,6 +2,7 @@ package usta.julianjb.bands.client;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.ui.Label;
 import org.fusesource.restygwt.client.Method;
 import org.fusesource.restygwt.client.MethodCallback;
 import usta.julianjb.bands.client.api.client.BookmarkClient;
@@ -46,8 +47,8 @@ public class BookmarkRequest {
      */
     // Make a POST request to the server to create a bookmark in the database
     public void createBookmark() {
-        // The variables to store the information about the bookmark (Page Title, Page Description, URL, and List)
-        String pageTitle, pageDescription, urlEncoded, list;
+        // The variables to store the information about the bookmark (Page Title, Page Description, URL, List, and Tags)
+        String pageTitle, pageDescription, urlEncoded, list, tags;
         // A Bookmark object to sent within the request
         Bookmark bookmark;
         // Get the actual values of the parameters sent in the query string of the request
@@ -60,13 +61,15 @@ public class BookmarkRequest {
         urlEncoded = Window.Location.getParameter("url");
         // By default, at creation all of the bookmarks are assigned to the "General" list
         list = "General";
+        // By default, at creation all of the bookmarks do not have associated tags
+        tags = "";
         // Log the parameters values to the console
         logger.log(Level.INFO, "Log<Page Title>: " + pageTitle);
         logger.log(Level.INFO, "Log<Page Description>: " + pageDescription);
         logger.log(Level.INFO, "Log<URL>: " + urlEncoded);
         logger.log(Level.INFO, "Log<List>: " + list);
         // Create the Bookmark object from the parameters values
-        bookmark = new Bookmark(pageTitle, pageDescription, urlEncoded, list);
+        bookmark = new Bookmark(pageTitle, pageDescription, urlEncoded, list, tags);
         // Request to store a bookmark in the database
         client.createBookmark(bookmark, new MethodCallback<Void>() {
             // If the POST request is handled correctly store the bookmark in the database
@@ -323,6 +326,41 @@ public class BookmarkRequest {
             public void onFailure(Method method, Throwable throwable) {
                 // Logging the request response
                 logger.log(Level.SEVERE, "The DELETE request failed");
+                throw new RuntimeException("Call failed");
+            }
+        });
+    }
+
+    // Make a GET request to the server to retrieve all of the bookmarks
+    // from the database filtered from a tag.
+    public void filterBookmarksByTag(String tagName) {
+        // A variable to store the Tag value
+        String tag;
+        // Get the actual value of the tag
+        tag = tagName;
+        // Request all of the Bookmark objects from the database using the tag value
+        client.filterBookmarksByTag(tag, new MethodCallback<List<Bookmark>>() {
+            // If the GET request is handled correctly display the Bookmark objects
+            @Override
+            // Using List type: see notes on BookmarkClient interface
+            public void onSuccess(Method method, List<Bookmark> response) {
+                // Logging the request response
+                logger.log(Level.INFO, "The GET request was successfully handled");
+                // Instance a label to display the tag used for filtering
+                bookmarkingModule.tagFilterLabel = new Label("Filtering by tag: " + tag);
+                // Set the CSS style to the tag filter label
+                bookmarkingModule.tagFilterLabel.setStyleName("tagFilterLabel");
+                // Add the label to the bookmarks panel
+                bookmarkingModule.bmBookmarksPanel.add(bookmarkingModule.tagFilterLabel);
+                // Retrieve the filtered Bookmark objects and send them to display in the UI
+                bookmarkingModule.showBookmarks(response);
+            }
+
+            // If the GET request is not handled correctly throw an exception
+            @Override
+            public void onFailure(Method method, Throwable exception) {
+                // Logging the request response
+                logger.log(Level.SEVERE, "The GET request failed");
                 throw new RuntimeException("Call failed");
             }
         });

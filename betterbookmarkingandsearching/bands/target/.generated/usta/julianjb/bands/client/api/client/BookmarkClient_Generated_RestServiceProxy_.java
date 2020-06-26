@@ -102,6 +102,28 @@ public class BookmarkClient_Generated_RestServiceProxy_ implements usta.julianjb
       bookmarks.onFailure(__method,__e);
     }
   }
+  public void filterBookmarksByTag(java.lang.String tag, org.fusesource.restygwt.client.MethodCallback<java.util.List<usta.julianjb.bands.shared.domain.Bookmark>> bookmarks) {
+    final java.lang.String final_tag = tag;
+    final org.fusesource.restygwt.client.Method __method =
+    getResource()
+    .resolve("/bmTagging/"+(tag== null? null : com.google.gwt.http.client.URL.encodePathSegment(tag))+"")
+    .get();
+    __method.setDispatcher(this.dispatcher);
+    __method.header(org.fusesource.restygwt.client.Resource.HEADER_ACCEPT, org.fusesource.restygwt.client.Resource.CONTENT_TYPE_JSON);
+    try {
+      __method.send(new org.fusesource.restygwt.client.AbstractRequestCallback<java.util.List<usta.julianjb.bands.shared.domain.Bookmark>>(__method, bookmarks) {
+        protected java.util.List<usta.julianjb.bands.shared.domain.Bookmark> parseResult() throws Exception {
+          try {
+            return toList(com.google.gwt.json.client.JSONParser.parse(__method.getResponse().getText()), usta.julianjb.bands.shared.domain.Bookmark_Generated_JsonEncoderDecoder_.INSTANCE);
+          } catch (Throwable __e) {
+            throw new org.fusesource.restygwt.client.ResponseFormatException("Response was NOT a valid JSON document", __e);
+          }
+        }
+      });
+    } catch (com.google.gwt.http.client.RequestException __e) {
+      bookmarks.onFailure(__method,__e);
+    }
+  }
   public void getBookmark(java.lang.String urlEncoded, org.fusesource.restygwt.client.MethodCallback<usta.julianjb.bands.shared.domain.Bookmark> bookmark) {
     final java.lang.String final_urlEncoded = urlEncoded;
     final org.fusesource.restygwt.client.Method __method =

@@ -21,10 +21,11 @@ import java.util.logging.Logger;
  * - The DELETE bookmark statement.
  * - The UPDATE bookmark statement.
  * - The SELECT multiple rows (lists) statement.
- * - The SELECT multiple rows (bookmarks) by filtering statement.
+ * - The SELECT multiple rows (bookmarks) by filtering statement (list).
  * - The INSERT list statement.
  * - The DELETE list statement.
  * - The UPDATE list statement.
+ * - The SELECT multiple rows (bookmarks) by filtering statement (tag).
  */
 public class SQLiteConnection {
 
@@ -67,11 +68,11 @@ public class SQLiteConnection {
             resultSet = statement.executeQuery();
             // For each of the bookmarks stored in the database,
             // an individual Bookmark object will be created
-            // from the fields "TITLE", "DESCRIPTION", "URL", and "LIST".
+            // from the fields "TITLE", "DESCRIPTION", "URL", "LIST", and "TAGS".
             while (resultSet.next()) {
                 returnedBookmarks.add(new Bookmark(resultSet.getString("TITLE"),
                         resultSet.getString("DESCRIPTION"), resultSet.getString("URL"),
-                        resultSet.getString("LIST")));
+                        resultSet.getString("LIST"), resultSet.getString("TAGS")));
             }
         } catch (SQLException sqle) {
             // Logging the exception
@@ -99,7 +100,7 @@ public class SQLiteConnection {
             // Prepare the INSERT statement for the update
             // To avoid duplication of bookmarks, the SQL statement INSERT IGNORE is used
             statement = connection.prepareStatement("INSERT OR IGNORE INTO BOOKMARKS " +
-                    "(TITLE, DESCRIPTION, URL, LIST) VALUES (?, ?, ?, ?)");
+                    "(TITLE, DESCRIPTION, URL, LIST, TAGS) VALUES (?, ?, ?, ?, ?)");
             // Obtain the value of the Page Title and add it to the INSERT statement
             statement.setString(1, bookmark.getPageTitle());
             // Obtain the value of the Page Description and add it to the INSERT statement
@@ -108,6 +109,8 @@ public class SQLiteConnection {
             statement.setString(3, bookmark.getUrlEncoded());
             // Obtain the value of the List and add it to the INSERT statement
             statement.setString(4, bookmark.getList());
+            // Obtain the values of the Tags and add it to the INSERT statement
+            statement.setString(5, bookmark.getTags());
             // Perform the update to the database
             statement.executeUpdate();
         } catch (SQLException sqle) {
@@ -142,10 +145,10 @@ public class SQLiteConnection {
             // Perform the query to the database and store the results
             resultSet = statement.executeQuery();
             // An individual Bookmark object will be created
-            // from the fields "TITLE", "DESCRIPTION", "URL", and "LIST".
+            // from the fields "TITLE", "DESCRIPTION", "URL", "LIST", and "TAGS".
             returnedBookmark = new Bookmark(resultSet.getString("TITLE"),
                     resultSet.getString("DESCRIPTION"), resultSet.getString("URL"),
-                    resultSet.getString("LIST"));
+                    resultSet.getString("LIST"), resultSet.getString("TAGS"));
         } catch (SQLException sqle) {
             // Logging the exception
             logger.log(Level.SEVERE, "An error while reading the database has occurred: "
@@ -197,7 +200,7 @@ public class SQLiteConnection {
             connection = getConnection();
             // Prepare the UPDATE statement for the update
             statement = connection.prepareStatement("UPDATE BOOKMARKS SET " +
-                    "TITLE = ?, DESCRIPTION = ?, URL = ?, LIST = ? WHERE URL = ?");
+                    "TITLE = ?, DESCRIPTION = ?, URL = ?, LIST = ?, TAGS = ? WHERE URL = ?");
             // Obtain the value of the Page Title and add it to the UPDATE statement
             statement.setString(1, bookmark.getPageTitle());
             // Obtain the value of the Page Description and add it to the UPDATE statement
@@ -206,8 +209,10 @@ public class SQLiteConnection {
             statement.setString(3, bookmark.getUrlEncoded());
             // Obtain the value of the List and add it to the UPDATE statement
             statement.setString(4, bookmark.getList());
+            // Obtain the values of the Tags and add it to the UPDATE statement
+            statement.setString(5, bookmark.getTags());
             // Add the value of the URL Encoded to the UPDATE statement
-            statement.setString(5, urlEncoded);
+            statement.setString(6, urlEncoded);
             // Perform the update to the database
             statement.executeUpdate();
         } catch (SQLException sqle) {
@@ -259,8 +264,8 @@ public class SQLiteConnection {
         return returnedLists;
     }
 
-    // The SELECT multiple rows (bookmarks) by filtering statement: Retrieves all of the
-    // bookmarks stored in the database filtered from a list.
+    // The SELECT multiple rows (bookmarks) by filtering statement (list):
+    // Retrieves all of the bookmarks stored in the database filtered from a list.
     public ArrayList<Bookmark> filterBookmarks(String list) throws Exception {
         // An ArrayList for retrieving the Bookmarks stored in the database
         ArrayList<Bookmark> returnedBookmarks = new ArrayList<Bookmark>();
@@ -281,11 +286,11 @@ public class SQLiteConnection {
             resultSet = statement.executeQuery();
             // For each of the bookmarks stored in the database,
             // an individual Bookmark object will be created
-            // from the fields "TITLE", "DESCRIPTION", "URL", and "LIST".
+            // from the fields "TITLE", "DESCRIPTION", "URL", "LIST", and "TAGS".
             while (resultSet.next()) {
                 returnedBookmarks.add(new Bookmark(resultSet.getString("TITLE"),
                         resultSet.getString("DESCRIPTION"), resultSet.getString("URL"),
-                        resultSet.getString("LIST")));
+                        resultSet.getString("LIST"), resultSet.getString("TAGS")));
             }
         } catch (SQLException sqle) {
             // Logging the exception
@@ -383,5 +388,48 @@ public class SQLiteConnection {
             statement.close();
             connection.close();
         }
+    }
+
+    // The SELECT multiple rows (bookmarks) by filtering statement (tag):
+    // Retrieves all of the bookmarks stored in the database filtered from a tag.
+    public ArrayList<Bookmark> filterBookmarksByTag(String tag) throws Exception {
+        // An ArrayList for retrieving the Bookmarks stored in the database
+        ArrayList<Bookmark> returnedBookmarks = new ArrayList<Bookmark>();
+        // To establish a connection with the database
+        Connection connection = null;
+        // To create a SELECT statement to query the database
+        PreparedStatement statement = null;
+        // To store the results of the query performed
+        ResultSet resultSet = null;
+        try {
+            // Establish a connection with the database
+            connection = getConnection();
+            // Prepare the SELECT statement for the query
+            statement = connection.prepareStatement("SELECT * FROM BOOKMARKS WHERE " +
+                    "INSTR(TAGS, ?) > 0");
+            // Add the value of the Tag to the SELECT statement
+            statement.setString(1, tag);
+            // Perform the query to the database and store the results
+            resultSet = statement.executeQuery();
+            // For each of the bookmarks stored in the database,
+            // an individual Bookmark object will be created
+            // from the fields "TITLE", "DESCRIPTION", "URL", "LIST", and "TAGS".
+            while (resultSet.next()) {
+                returnedBookmarks.add(new Bookmark(resultSet.getString("TITLE"),
+                        resultSet.getString("DESCRIPTION"), resultSet.getString("URL"),
+                        resultSet.getString("LIST"), resultSet.getString("TAGS")));
+            }
+        } catch (SQLException sqle) {
+            // Logging the exception
+            logger.log(Level.SEVERE, "An error while reading the database has occurred: "
+                    + sqle);
+        } finally {
+            // Cleaning up the database connection and variables
+            resultSet.close();
+            statement.close();
+            connection.close();
+        }
+        // Return the list of Bookmark objects retrieved
+        return returnedBookmarks;
     }
 }

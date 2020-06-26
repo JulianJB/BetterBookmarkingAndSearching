@@ -44,11 +44,14 @@ public class bands_bookmarking implements EntryPoint {
     private HorizontalPanel bmListPanel;
 
     // A vertical panel widget to display the bookmarks into the main panel
-    private VerticalPanel bmBookmarksPanel;
+    protected VerticalPanel bmBookmarksPanel;
 
     // A List of String objects containing the retrieved lists from the database
     // Required to be a global variable since it is accessed from different parts of the module
     protected List<String> lists;
+
+    // A label widget to display the tag used for filtering
+    protected Label tagFilterLabel;
 
     // The code to be executed once the Bookmarking module is loaded
     public void onModuleLoad() {
@@ -129,6 +132,7 @@ public class bands_bookmarking implements EntryPoint {
         Label nameLabel;
         Label descriptionLabel;
         Anchor locationAnchor;
+        Anchor tagsAnchor;
         Button editButton;
         Button removeButton;
         // Constants for defining the columns of the content
@@ -141,6 +145,7 @@ public class bands_bookmarking implements EntryPoint {
         // Index 0: Page Title (Label)
         // Index 1: Page Description (Label)
         // Index 2: URL Encoded (Anchor)
+        // Index 3: Tags (Label)
         final int ANCHOR_INDEX = 2;
         // Instance a flex table to act as a container of the Bookmark objects
         bookmarksTable = new FlexTable();
@@ -156,6 +161,8 @@ public class bands_bookmarking implements EntryPoint {
             nameLabel.setStyleName("nameLabel");
             descriptionLabel = new Label(bookmark.getPageDescription());
             locationAnchor = new Anchor(bookmark.getUrlEncoded());
+            // Set the CSS style to the location anchor
+            locationAnchor.setStyleName("locationAnchor");
             // Adding the click handler method for the anchor element
             locationAnchor.addClickHandler(new ClickHandler() {
                 @Override
@@ -172,6 +179,24 @@ public class bands_bookmarking implements EntryPoint {
             containerPanel.add(nameLabel);
             containerPanel.add(descriptionLabel);
             containerPanel.add(locationAnchor);
+            // Obtain all the tags from the bookmark and separate them individually
+            String[] tagsArray = bookmark.getTags().trim().split("\\s+");
+            // Iterate for each tag in the bookmark
+            for (String tag : tagsArray) {
+                tagsAnchor = new Anchor(tag);
+                // Adding the click handler method for the anchor element
+                tagsAnchor.addClickHandler(new ClickHandler() {
+                    @Override
+                    public void onClick(ClickEvent clickEvent) {
+                        // Clear all the UI elements in the bookmarks panel so that
+                        // it can be refreshed with the updated bookmarks
+                        bmBookmarksPanel.clear();
+                        // Proceed to request the bookmarks from the database with the given tag filter
+                        bmRequest.filterBookmarksByTag(tag);
+                    }
+                });
+                containerPanel.add(tagsAnchor);
+            }
             // Add the container panel to the bookmarks table in the corresponding column
             // Create a new entry in the flex table
             bookmarksTable.setWidget(row, BOOKMARK_COLUMN, containerPanel);
@@ -555,10 +580,12 @@ public class bands_bookmarking implements EntryPoint {
         Label descriptionLabel;
         Label locationLabel;
         Label listLabel;
+        Label tagsLabel;
         TextBox nameTextBox;
         TextArea descriptionTextArea;
         TextBox locationTextBox;
         ListBox listSelector;
+        TextBox tagsTextBox;
         Button confirmButton;
         Button cancelButton;
         // Initialise the UI elements for the bookmarks editor
@@ -578,6 +605,7 @@ public class bands_bookmarking implements EntryPoint {
         descriptionLabel = new Label("Description:");
         locationLabel = new Label("Location:");
         listLabel = new Label("List:");
+        tagsLabel = new Label("Tags (separated by a whitespace):");
         // Initialise the text areas for the bookmarks editor with the bookmark information
         nameTextBox = new TextBox();
         // Set a placeholder text for the Name text box
@@ -592,6 +620,11 @@ public class bands_bookmarking implements EntryPoint {
         locationTextBox = new TextBox();
         locationTextBox.setText(bookmark.getUrlEncoded());
         locationTextBox.setEnabled(false);
+        tagsTextBox = new TextBox();
+        // Set a placeholder text for the Tags text box
+        tagsTextBox.getElement().setPropertyString("placeholder",
+                "Tags (Optional)");
+        tagsTextBox.setText(bookmark.getTags());
         // Initialise the list selector for the bookmarks editor
         listSelector = new ListBox();
         // Request to update the lists retrieved from the database
@@ -633,7 +666,7 @@ public class bands_bookmarking implements EntryPoint {
                     Bookmark temporaryBookmark;
                     temporaryBookmark = new Bookmark(nameTextBox.getText(),
                             descriptionTextArea.getText(), locationTextBox.getText(),
-                            "General");
+                            "General", tagsTextBox.getText());
                     // Close the bookmarks editor window
                     bookmarksEditor.hide();
                     // Request the list creator window to create a new list
@@ -660,8 +693,8 @@ public class bands_bookmarking implements EntryPoint {
             @Override
             public void onClick(ClickEvent clickEvent) {
                 // The variables to store the information about the bookmark
-                // (Page Title, Page Description, URL, and List).
-                String pageTitle, pageDescription, urlEncoded, list;
+                // (Page Title, Page Description, URL, List, and Tags).
+                String pageTitle, pageDescription, urlEncoded, list, tags;
                 // Get the updated values of the bookmark parameters retrieved from the
                 // text areas of the bookmarks editor.
                 pageTitle = nameTextBox.getText();
@@ -669,6 +702,7 @@ public class bands_bookmarking implements EntryPoint {
                 urlEncoded = locationTextBox.getText();
                 // Get the text value of the selected list item
                 list = listSelector.getSelectedItemText();
+                tags = tagsTextBox.getText().toLowerCase();
                 // If the list item selected is the "New list..." element
                 // reset the list value to the "General" list item.
                 if (list.equals("New list...")) {
@@ -681,7 +715,7 @@ public class bands_bookmarking implements EntryPoint {
                 // while interacting with the Bookmark Editor.
                 Bookmark editedBookmark;
                 // Create the Bookmark object from the parameters values
-                editedBookmark = new Bookmark(pageTitle, pageDescription, urlEncoded, list);
+                editedBookmark = new Bookmark(pageTitle, pageDescription, urlEncoded, list, tags);
                 // Close the bookmarks editor window
                 bookmarksEditor.hide();
                 // Clear all the UI elements in the list panel and in the bookmarks
@@ -722,6 +756,9 @@ public class bands_bookmarking implements EntryPoint {
         // Add the bookmark list UI elements to the container panel
         containerPanel.add(listLabel);
         containerPanel.add(listSelector);
+        // Add the bookmark tags UI elements to the container panel
+        containerPanel.add(tagsLabel);
+        containerPanel.add(tagsTextBox);
         // Add a break line in HTML to separate the widgets
         containerPanel.add(new HTML("&nbsp;"));
         // Add the bookmarks editor buttons to the buttons panel

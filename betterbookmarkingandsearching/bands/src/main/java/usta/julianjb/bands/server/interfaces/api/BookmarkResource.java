@@ -182,4 +182,24 @@ public class BookmarkResource {
         // Remove the list from the database
         dbConnection.deleteList(list);
     }
+
+    // Retrieve all of the Bookmark objects filtered from a tag
+    @GET
+    // Map the request as of Bookmark Tagging type (/bmTagging)
+    @Path("/bmTagging/{tag}")
+    @Produces("application/json")
+    public ArrayList<Bookmark> filterBookmarksByTag(@PathParam("tag") String tag) throws Exception {
+        // Logging the request
+        logger.log(Level.INFO, "Processing a GET request from the client");
+        // An ArrayList for the Bookmark objects retrieved from the database
+        ArrayList<Bookmark> returnedBookmarks;
+        // Starting the connection with the database
+        dbConnection = new SQLiteConnection();
+        // Retrieve all of the bookmarks from the database
+        returnedBookmarks = dbConnection.filterBookmarksByTag(tag);
+        // Reverse the order of the list of bookmarks to display them from newest to oldest
+        Collections.reverse(returnedBookmarks);
+        // Return the ArrayList of the Bookmark objects to the client
+        return returnedBookmarks;
+    }
 }

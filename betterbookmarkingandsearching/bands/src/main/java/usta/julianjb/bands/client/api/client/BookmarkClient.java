@@ -77,4 +77,10 @@ public interface BookmarkClient extends RestService {
     // Map the request as of Bookmark Filter type (/bmFilter)
     @Path("/bmFilter/{list}")
     public void removeList(@PathParam("list") String list, MethodCallback<Void> callback);
+
+    // Retrieve all of the Bookmark objects filtered from a tag
+    @GET
+    // Map the request as of Bookmark Tagging type (/bmTagging)
+    @Path("/bmTagging/{tag}")
+    public void filterBookmarksByTag(@PathParam("tag") String tag, MethodCallback<List<Bookmark>> bookmarks);
 }

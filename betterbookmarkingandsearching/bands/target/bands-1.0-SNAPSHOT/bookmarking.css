@@ -14,6 +14,7 @@ body {
 .gwt-Label,
 .titleLabel,
 .nameLabel,
+.tagFilterLabel,
 .listFilterLabel,
 .themeSelectorLabel,
 .instructionsTitleLabel,
@@ -28,15 +29,18 @@ body {
 /** The CSS rules for the GWT anchor widget
     Several anchor styles inherit from this style */
 .gwt-Anchor,
+.locationAnchor,
 .creditsAnchor {
     font-size: 17px;
     padding-bottom: 4px;
     color: #1c1c1c;
+    margin-right: 7px;
 }
 
 /** The CSS rules for the hover selector effect of the GWT anchor
     Change the style of the anchor when the mouse is moved over it */
 .gwt-Anchor:hover,
+.locationAnchor:hover,
 .creditsAnchor:hover {
     color: #0c7b93;
 }
@@ -96,6 +100,12 @@ body {
     font-size: 22px;
 }
 
+/** The CSS rules for the tag filter label (Java: tagFilterLabel)
+    Inherits gwt-Label CSS style */
+.tagFilterLabel {
+    margin-left: 30px;
+}
+
 /** The CSS rules for the list filter label (Java: listFilterLabel)
     Inherits gwt-Label CSS style */
 .listFilterLabel {
@@ -137,9 +147,17 @@ body {
 
 /** The CSS styles for the GWT anchor widgets */
 
+/** The CSS rules for the location anchor (Java: locationAnchor)
+    Inherits gwt-Anchor CSS style */
+.locationAnchor {
+    display: block;
+    margin-right: 0px;
+}
+
 /** The CSS rules for the credits anchor (Java: homeAnchor and helpAnchor)
     Inherits gwt-Anchor CSS style */
 .creditsAnchor {
+    margin-right: 0px;
     margin-left: 15px;
 }
 

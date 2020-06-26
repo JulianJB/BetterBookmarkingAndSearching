@@ -10,16 +10,17 @@ public class Bookmark_Generated_JsonEncoderDecoder_ extends org.fusesource.resty
     if( value==null ) {
       return getNullType();
     }
-      return encodeBookmark1055057023(value);
+      return encodeBookmark1942195581(value);
     }
     
-    private com.google.gwt.json.client.JSONValue encodeBookmark1055057023( usta.julianjb.bands.shared.domain.Bookmark value) {
+    private com.google.gwt.json.client.JSONValue encodeBookmark1942195581( usta.julianjb.bands.shared.domain.Bookmark value) {
       com.google.gwt.json.client.JSONObject rc = new com.google.gwt.json.client.JSONObject();
       usta.julianjb.bands.shared.domain.Bookmark parseValue = (usta.julianjb.bands.shared.domain.Bookmark)value;
       isNotNullValuePut(STRING.encode(parseValue.getPageTitle()), rc, "pageTitle");
       isNotNullValuePut(STRING.encode(parseValue.getPageDescription()), rc, "pageDescription");
       isNotNullValuePut(STRING.encode(parseValue.getUrlEncoded()), rc, "urlEncoded");
       isNotNullValuePut(STRING.encode(parseValue.getList()), rc, "list");
+      isNotNullValuePut(STRING.encode(parseValue.getTags()), rc, "tags");
       return rc;
     }
     
@@ -28,17 +29,18 @@ public class Bookmark_Generated_JsonEncoderDecoder_ extends org.fusesource.resty
         return null;
       }
       com.google.gwt.json.client.JSONObject object = toObject(value);
-        return decodeBookmark1055057023(object);
+        return decodeBookmark1942195581(object);
       }
       
-      private usta.julianjb.bands.shared.domain.Bookmark decodeBookmark1055057023(com.google.gwt.json.client.JSONObject object) {
+      private usta.julianjb.bands.shared.domain.Bookmark decodeBookmark1942195581(com.google.gwt.json.client.JSONObject object) {
         // We found a creator so we use the annotated constructor
         usta.julianjb.bands.shared.domain.Bookmark rc = new usta.julianjb.bands.shared.domain.Bookmark(
           // The arguments are placed in the order they appear within the annotated constructor
           object.get("pageTitle") == null || object.get("pageTitle") instanceof com.google.gwt.json.client.JSONNull ? null : STRING.decode(object.get("pageTitle")), 
           object.get("pageDescription") == null || object.get("pageDescription") instanceof com.google.gwt.json.client.JSONNull ? null : STRING.decode(object.get("pageDescription")), 
           object.get("urlEncoded") == null || object.get("urlEncoded") instanceof com.google.gwt.json.client.JSONNull ? null : STRING.decode(object.get("urlEncoded")), 
-          object.get("list") == null || object.get("list") instanceof com.google.gwt.json.client.JSONNull ? null : STRING.decode(object.get("list"))
+          object.get("list") == null || object.get("list") instanceof com.google.gwt.json.client.JSONNull ? null : STRING.decode(object.get("list")), 
+          object.get("tags") == null || object.get("tags") instanceof com.google.gwt.json.client.JSONNull ? null : STRING.decode(object.get("tags"))
         );
         return rc;
       }
