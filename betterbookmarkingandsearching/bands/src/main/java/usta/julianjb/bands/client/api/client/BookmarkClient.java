@@ -17,6 +17,14 @@ import java.util.List;
  * The BookmarkClient interface defines and maps the requests
  * between the client and the server of the Bookmarking module.
  */
+
+/**
+ * The code of this interface is based on the following source:
+ * Title: Building a GWT REST application with RestyGWT and Jersey 2.7
+ * Author: Quillévéré, R.
+ * Date: 2014
+ * Availability: https://ronanquillevere.github.io/2014/03/16/gwt-rest-app.html
+ */
 @Path("/api/bookmarks")
 public interface BookmarkClient extends RestService {
 

@@ -224,11 +224,11 @@ body {
     cursor: pointer;
     overflow: hidden;
     outline: none;
-    height: 32px;
-    width: 32px;
-    margin-top: 28px;
+    height: 20px;
+    width: 20px;
+    margin-top: 23px;
     margin-right: 20px;
-    margin-left: 15px;
+    margin-left: 7px;
     float: left;
     padding: 0px;
 }
@@ -368,7 +368,8 @@ body {
 }
 
 /** The CSS rules for the GWT Dialog Box widget taken from
-    the default theme com.google.gwt.user.theme.clean.Clean */
+    the default theme com.google.gwt.user.theme.clean.Clean
+    Available at: https://github.com/gwtproject/gwt/tree/master/user/src/com/google/gwt/user/theme/clean/public/gwt/clean */
 .gwt-DialogBox .Caption {
     background: #F1F1F1;
     padding: 4px 8px 4px 4px;

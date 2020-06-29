@@ -123,6 +123,14 @@ public class bands_bookmarking implements EntryPoint {
     /**
      * The Graphic User Interface (GUI) methods
      */
+    /**
+     * The code relevant to the bookmarks table of this method
+     * is based on the following source:
+     * Title: How to get row values from dynamic FlexTable in GWT?
+     * Author: Papadakis, A.
+     * Date: 2017
+     * Availability: https://stackoverflow.com/questions/46174584/how-to-get-row-values-from-dynamic-flextable-in-gwt
+     */
     // Show all of the bookmarks retrieved from the database
     protected void showBookmarks(List<Bookmark> bookmarks) {
         // A flex table widget to display the bookmarks

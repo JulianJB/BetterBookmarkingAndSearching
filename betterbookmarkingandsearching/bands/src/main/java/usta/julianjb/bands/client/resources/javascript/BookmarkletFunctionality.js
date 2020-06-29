@@ -13,6 +13,13 @@ var pageTitle = encodeURIComponent(document.title);
 var pageDescription = "";
 var urlEncoded = encodeURIComponent(location.href);
 
+/**
+ * This code snippet is taken from the following source:
+ * Title: A Javascript function used to extract meta description from an HTML document
+ * Author: Maloney, N.
+ * Date: 2011
+ * Availability: https://gist.github.com/ngmaloney/1049839
+ */
 // Get the description about the website
 var metaTags = document.getElementsByTagName("meta");
 // Look in the meta tags of the website for information about the website

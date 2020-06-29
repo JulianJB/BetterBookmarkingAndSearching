@@ -27,6 +27,14 @@ import java.util.logging.Logger;
  * - The UPDATE list statement.
  * - The SELECT multiple rows (bookmarks) by filtering statement (tag).
  */
+
+/**
+ * The code of this class is based on the following source:
+ * Title: Doing More with GWT 2.x and MySQL
+ * Author: Austin
+ * Date: 2011
+ * Availability: http://programmingfortherestofus.blogspot.com/2011/03/doing-more-with-gwt-2x-and-mysql.html
+ */
 public class SQLiteConnection {
 
     // A logger to keep track of the requests handled by the database connector
