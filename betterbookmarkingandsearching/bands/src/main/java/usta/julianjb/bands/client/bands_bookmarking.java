@@ -3,6 +3,7 @@ package usta.julianjb.bands.client;
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Document;
+import com.google.gwt.dom.client.Style;
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -614,6 +615,8 @@ public class bands_bookmarking implements EntryPoint {
         locationLabel = new Label("Location:");
         listLabel = new Label("List:");
         tagsLabel = new Label("Tags (separated by a whitespace):");
+        // Set the top margin of the label to 15 pixels
+        tagsLabel.getElement().getStyle().setMarginTop(15, Style.Unit.PX);
         // Initialise the text areas for the bookmarks editor with the bookmark information
         nameTextBox = new TextBox();
         // Set a placeholder text for the Name text box
